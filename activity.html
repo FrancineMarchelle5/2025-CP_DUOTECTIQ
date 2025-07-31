@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DuotectIQ - Activity Log</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+   body {
+      margin: 0;
+      background: #fdfdfd;
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: #222;
+    }
+   .dashboard-header {
+  background:#3E8209;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 32px;
+  height: 64px;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;         
+  right: 0;
+  z-index: 100;    
+}
+    .dashboard-header .profile-box {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      color: #222;
+      border-radius: 22px;
+      padding: 6px 18px 6px 6px;
+      font-size: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      gap: 10px;
+      min-width: 170px;
+    }
+    .dashboard-header .profile-pic {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #4b8c2a;
+      background: #eee;
+    }
+    .dashboard-header .profile-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: 0.98rem;
+      line-height: 1.1;
+    }
+    .dashboard-header .profile-info .name {
+      font-weight: 600;
+      color: #222;
+    }
+    .dashboard-header .profile-info .role {
+      font-size: 0.92rem;
+      color: #4b8c2a;
+      font-weight: 500;
+    }
+    .dashboard-header .profile-arrow {
+      margin-left: 8px;
+      font-size: 1.2rem;
+      color: #888;
+    }
+
+    .dashboard-main {
+      display: flex;
+      min-height: calc(100vh - 64px);
+      margin-top: 64px;
+      margin-left: 240px; /* Same as sidebar width */
+      transition: margin-left 0.3s;
+    }
+
+    .dashboard-sidebar {
+  width: 240px;
+  background: #274D09;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 100vh;
+  height: 100vh;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;    /* Higher than header */
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 24px;
+}
+    .dashboard-sidebar.collapsed {
+      width: 80px;
+      min-width: 70px;
+      overflow: visible;
+      
+    }
+    .sidebar-top {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  .sidebar-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  padding: 2px 0 0 12px;   /* Increase/decrease 16px to move down/up */
+  height: 60px;             /* Adjust height for tighter or looser fit */
+  margin-bottom: 70px;      /* Space below logo row, decrease to move menu up */
+}
+    .sidebar-logo-row img {
+      height: 48px;
+      width:auto;
+      border-radius: 10px;
+      transition: margin 0.3s;
+      margin-left: -5px;;
+    }
+    .sidebar-logo-row span {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: opacity 0.3s, width 0.3s;
+      white-space: nowrap;
+      margin-top: 15px;
+    }
+    .dashboard-sidebar.collapsed .sidebar-logo-row span {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+    .sidebar-toggle-btn {
+  background: #274D09;
+  border: none;
+  color: #fff;
+  border-radius: 50%;      /* Make it a circle */
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 20px;
+  right: -20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 11;
+  transition: background 0.2s;
+}
+    .sidebar-toggle-btn:hover {
+      background: #3b7a2a;
+    }
+    .sidebar-toggle-btn i {
+      font-size: 1.3rem;
+      transition: transform 0.3s;
+    }
+    .dashboard-sidebar.collapsed .sidebar-toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 0 0 0 8px;
+    }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap:20px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.15rem;
+      font-weight: 500;
+      padding: 12px 18px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-align: left;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .sidebar-menu .active, .sidebar-menu a:hover {
+      background: #fff;
+      color: #4b8c2a;
+    }
+    .sidebar-menu .icon {
+      font-size: 1.3rem;
+      width: 28px;
+      text-align: center;
+      min-width: 28px;
+    }
+    .dashboard-sidebar.collapsed .sidebar-menu a span:not(.icon) {
+      display: none;
+    }
+    .dashboard-sidebar.collapsed .sidebar-menu a {
+      justify-content: center;
+      padding: 12px 0;
+    }
+
+    .dashboard-content {
+      flex: 1;
+      padding: 36px 32px 0 32px;
+      background: #f4f4f4;
+      min-width: 0;
+      transition: margin-left 0.3s;
+    }
+    .dashboard-title {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      margin-top: 0;
+      letter-spacing: 0.5px;
+    }
+    .dashboard-overview {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .overview-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+      padding: 24px 32px;
+      min-width: 220px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 1.15rem;
+      font-weight: 500;
+      position: relative;
+    }
+    .overview-card .icon {
+      font-size: 2.1rem;
+      color: #4b8c2a;
+      margin-right: 10px;
+    }
+    .overview-card .status-dot {
+      width: 10px;
+      height: 10px;
+      background: #2ecc40;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 7px;
+    }
+    .overview-card .overview-value {
+      color: #4b8c2a;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .overview-card .overview-label {
+      color: #222;
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-left: 2px;
+    }
+    .overview-card .overview-arrow {
+      color: #4b8c2a;
+      font-size: 1.3rem;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    .sorting-summary-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin: 32px 0 18px 0;
+      letter-spacing: 0.5px;
+      text-shadow: 2px 4px 8px #eaeaea, 0 2px 8px #eaeaea;
+    }
+    .sorting-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .summary-date {
+      font-size: 1rem;
+      color: #444;
+      background: #fff;
+      border: 1.5px solid #ccc;
+      border-radius: 8px;
+      padding: 6px 12px;
+      outline: none;
+      margin-left: 8px;
+    }
+    .summary-table-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+      padding: 18px 18px 8px 18px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.08rem;
+      background: #fff;
+    }
+    .summary-table th, .summary-table td {
+      padding: 10px 14px;
+      text-align: center;
+    }
+    .summary-table th {
+      background: #f4f4f4;
+      color: #333;
+      font-weight: 700;
+      font-size: 1.08rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .summary-table td {
+      color: #222;
+      font-weight: 500;
+    }
+    .summary-table tr:last-child td {
+      font-weight: 700;
+      color: #4b8c2a;
+      background: #f8fff4;
+      border-top: 2px solid #e0e0e0;
+    }
+    .summary-table td:last-child, .summary-table th:last-child {
+      font-weight: 700;
+    }
+    .summary-table-container::-webkit-scrollbar {
+      height: 8px;
+      background: #eee;
+    }
+    .summary-table-container::-webkit-scrollbar-thumb {
+      background: #c2e0b7;
+      border-radius: 8px;
+    }
+    @media (max-width: 900px) {
+      .dashboard-main {
+        flex-direction: column;
+      }
+      .dashboard-sidebar {
+        width: 100vw;
+        flex-direction: row;
+        min-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 60px;
+      }
+      .sidebar-menu {
+        flex-direction: row;
+        gap: 0;
+        width: 100vw;
+        justify-content: space-around;
+        padding: 0;
+      }
+      .dashboard-content {
+        padding: 18px 4vw 0 4vw;
+      }
+    }
+    @media (max-width: 600px) {
+      .dashboard-header {
+        flex-direction: column;
+        height: auto;
+        padding: 8px 8px;
+      }
+      .dashboard-content {
+        padding: 10px 2vw 0 2vw;
+      }
+      .overview-card {
+        padding: 14px 10px;
+        min-width: 120px;
+        font-size: 1rem;
+      }
+      .summary-table th, .summary-table td {
+        padding: 6px 4px;
+        font-size: 0.98rem;
+      }
+    }
+    .summary-table tbody tr:nth-child(even) {
+  background: #f8f8f8;
+}
+.summary-table tbody tr:nth-child(odd) {
+  background: #fff;
+}
+.summary-table tbody tr {
+  border-bottom: 2px solid #e0e0e0;
+}
+.summary-table tbody tr:last-child {
+  border-bottom: none;
+}
+    .calendar-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .calendar-icon {
+      margin-left: 6px;
+      font-size: 1.2rem;
+      color: #444;
+      cursor: pointer;
+      user-select: none;
+    }
+    .custom-calendar {
+      position: absolute;
+      top: 38px;
+      left: 0;
+      background: #f8f8f8;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+      padding: 16px 18px 12px 18px;
+      z-index: 100;
+      min-width: 240px;
+      max-width: 270px;
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: #222;
+      border: 2px solid #4b8c2a22;
+      animation: fadeIn 0.18s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .calendar-header button {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: #4b8c2a;
+      padding: 2px 8px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .calendar-header button:hover {
+      background: #e6f4e6;
+    }
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 1.08rem;
+      margin-top: 2px;
+    }
+    .calendar-table th {
+      color: #4b8c2a;
+      font-weight: 700;
+      padding: 4px 0;
+      font-size: 1rem;
+    }
+    .calendar-table td {
+      padding: 4px 0;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .calendar-table td:hover {
+      background: #e6f4e6;
+      color: #4b8c2a;
+    }
+    .calendar-table .selected {
+      background: #4b8c2a;
+      color: #fff;
+      font-weight: 700;
+    }
+    .calendar-table .today {
+      border: 1.5px solid #4b8c2a;
+      font-weight: 700;
+      background: #e6f4e6;
+    }
+    #sortingSection {
+      display: none;
+    }
+    .sorting-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .sorting-toolbar .sorting-controls label {
+      margin-right: 10px;
+      font-size: 1.1rem;
+    }
+    .sorting-toolbar .sorting-controls button {
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 6px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px #b2d8b2;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    .sorting-toolbar .sorting-status {
+      margin-left: 12px;
+      font-size: 1.1rem;
+    }
+    .sorting-toolbar .sorting-status .status-dot {
+      color: red;
+      font-size: 1.2rem;
+      vertical-align: middle;
+      margin-right: 3px;
+    }
+    .sorting-main {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+    .sorting-feed, .sorting-result {
+      background: #f9f6f6;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px #e0e0e0;
+      padding: 18px 24px;
+      min-width: 340px;
+      flex: 1;
+      padding: 18px 24px;
+  min-width: 340px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#liveCam {
+  width: 100%;
+  max-width: 480px; /* or any max width you want */
+  height: 270px;    /* or use aspect-ratio: 16/9; for modern browsers */
+  border-radius: 8px;
+  background: #222;
+  object-fit: cover;
+  display: block;
+  transform: scalex(-1);
+
+    }
+    .sorting-feed-title, .sorting-result-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .sorting-feed-cam {
+      background: #ddd;
+      border: 4px solid #ccc;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #555;
+    }
+    .sorting-result {
+      background: #e0e0e0;
+      box-shadow: 0 6px 18px #bdbdbd;
+    }
+    .sorting-result-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 8px #fff;
+    }
+    .sorting-result-table {
+      width: 100%;
+      font-size: 1.1rem;
+    }
+    .sorting-result-table td {
+      padding: 6px 0;
+    }
+    .sorting-baskets {
+      background: #e0e0e0;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px #bdbdbd;
+      padding: 32px 24px;
+      margin-top: 32px;
+    }
+    .sorting-baskets-title {
+      font-size: 2rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .sorting-baskets-btns {
+      display: flex;
+      justify-content: center;
+      gap: 200px;
+    }
+    .sorting-baskets-btns button {
+      font-size: 2rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 18px;
+      padding:25px 40px;
+      box-shadow: 0 4px 12px #b2d8b2;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .sorting-baskets-btns .green { background: #4b8c2a; color: #fff; }
+    .sorting-baskets-btns .damaged { background: #e0b04b; color: #fff; box-shadow: 0 4px 12px #ffe0b2; }
+    .sorting-baskets-btns .red { background: #d11a1a; color: #fff; box-shadow: 0 4px 12px #ffb2b2; }
+
+    #activityLogTable tbody tr:nth-child(even) {
+  background: #f8fff4;
+}
+#activityLogTable tbody tr:nth-child(odd) {
+  background: #fff;
+}
+#activityLogTable td {
+  border: none !important;
+  color: #2d3a22;
+  font-weight: 500;
+  padding: 12px 8px;
+}
+#activityLogTable th {
+  border: none !important;
+}
+  </style>
+</head>
+<body>
+  <div class="dashboard-header">
+    <div class="profile-box" id="profileBox" style="position:relative;cursor:pointer;">
+      <span class="profile-pic" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:#eee;border:2px solid #4b8c2a;">
+        <i class="fas fa-user" style="font-size:1.5rem;color:#4b8c2a;"></i>
+      </span>
+      <div class="profile-info">
+        <span class="name" id="headerProfileName"></span>
+        <span class="role" id="headerProfileRole"></span>
+      </div>
+      <span class="profile-arrow"><i class="fas fa-chevron-down"></i></span>
+      <!-- Profile Popup -->
+      <div id="profilePopup" style="display:none; position:absolute; top:54px; right:0; z-index:999; background:#f8f8f8; border-radius:24px; box-shadow:0 4px 24px #bbb; padding:24px 32px 18px 32px; min-width:320px; max-width:95vw;">
+        <div style="font-size:1.3rem;font-weight:700;margin-bottom:10px;">My Profile</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+          <span style="display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:#eee;border:2px solid #4b8c2a;">
+            <i class="fas fa-user" style="font-size:2rem;color:#4b8c2a;"></i>
+          </span>
+          <div>
+            <div style="font-weight:600;font-size:1.1rem;" id="popupProfileName"></div>
+            <div style="font-size:1rem;color:#888;" id="popupProfileRole"></div>
+          </div>
+        </div>
+        <hr style="margin:12px 0 14px 0;border:0;border-top:1.5px solid #ccc;">
+        <div style="font-weight:600;font-size:1.08rem;margin-bottom:8px;">Personal Information</div>
+        <div style="margin-bottom:6px;"><b>Name:</b> &nbsp; <span id="popupProfileFullName"></span></div>
+        <div style="margin-bottom:6px;"><b>Mobile Number:</b> &nbsp; <span id="popupProfileMobile"></span></div>
+        <div><b>Address:</b> &nbsp; <span id="popupProfileAddress"></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-main">
+    <div class="dashboard-sidebar" id="dashboardSidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-logo-row">
+          <img src="Pictures/Logo.png" alt="DuotectIQ Logo">
+          <span>DuotectIQ</span>
+        </div>
+        <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+      <div class="sidebar-menu">
+        <a href="dashboard.html"><span class="icon"><i class="fas fa-home"></i></span><span>Dashboard</span></a>
+        <a href="sorting.html"><span class="icon"><i class="fas fa-seedling"></i></span><span>Sorting</span></a>
+        <a href="activity.html" class="active"><span class="icon"><i class="fas fa-list"></i></span><span>Activity Log</span></a>
+        <a href="#" id="logoutMenu"><span class="icon"><i class="fas fa-sign-out-alt"></i></span><span>Logout</span></a>
+      </div>
+    </div>
+    <div class="dashboard-content">
+      <!-- Activity Log Section ONLY -->
+      <div id="activitySection">
+        <h2 class="dashboard-title">Activity Log</h2>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="date" id="activityDateFilter" style="padding:6px 12px;border-radius:8px;border:1.5px solid #ccc;font-size:1rem;">
+          </div>
+          <div>
+            <label for="activitySort" style="font-weight:600;margin-right:6px;">Sort by</label>
+            <select id="activitySort" style="padding:6px 12px;border-radius:8px;border:1.5px solid #ccc;font-size:1rem;">
+              <option value="all">All</option>
+              <option value="tomato">Tomato</option>
+              <option value="bellpepper">Bell Pepper</option>
+              <option value="notdamagedred">Not Damaged (Red)</option>
+              <option value="notdamagedgreen">Not Damaged (Green)</option>
+              <option value="damaged">Damaged</option>
+              <option value="small">Small</option>
+              <option value="medium">Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </div>
+        </div>
+        <div style="background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.10);padding:8px 8px 8px 8px;">
+          <table id="activityLogTable" style="width:100%;border-collapse:separate;table-layout:fixed;">
+            <thead>
+              <tr style="background:#e6f4e6;">
+                <th style="padding:12px 8px;text-align:left;width:20%;color:#256029;">Crop Type</th>
+                <th style="padding:12px 8px;text-align:left;width:16%;color:#256029;">Color</th>
+                <th style="padding:12px 8px;text-align:left;width:22%;color:#256029;">Condition</th>
+                <th style="padding:12px 8px;text-align:left;width:22%;color:#256029;">Sorted to</th>
+                <th style="padding:12px 8px;text-align:left;width:12%;color:#256029;">Size</th>
+                <th style="padding:12px 8px;text-align:left;width:20%;color:#256029;">Time</th>
+              </tr>
+            </thead>
+            <tbody id="activityLogTbody">
+              <!-- Activity log rows will be rendered here by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="logoutModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;background:rgba(0,0,0,0.18);align-items:center;justify-content:center;">
+    <div style="background:#e0e0e0;padding:32px 28px 24px 28px;border-radius:16px;box-shadow:0 4px 24px #888;max-width:350px;width:90%;text-align:center;">
+      <div style="font-size:1.35rem;font-weight:600;margin-bottom:24px;">Are you sure you want to log out?</div>
+      <button id="confirmLogoutBtn" style="background:#d9534f;color:#fff;font-size:1.1rem;font-weight:600;padding:10px 28px;border:none;border-radius:8px;margin-right:18px;box-shadow:0 2px 8px #fff;outline:none;cursor:pointer;border:3px solid #fff;">Yes, log out</button>
+      <button id="cancelLogoutBtn" style="background:#fff;color:#274D09;font-size:1.1rem;font-weight:600;padding:10px 28px;border:none;border-radius:8px;border:3px solid #bdbdbd;box-shadow:0 2px 8px #fff;outline:none;cursor:pointer;">Cancel</button>
+    </div>
+  </div>
+  <script>
+    // Profile fetch and fill
+    document.addEventListener('DOMContentLoaded', function () {
+      const userMobile = localStorage.getItem('mobile_number');
+      if (userMobile) {
+        fetch('http://127.0.0.1:5000/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mobile_number: userMobile })
+        })
+        .then(res => res.json())
+        .then(result => {
+          if (result.success && result.profile) {
+            const profile = result.profile;
+            const fullName = [profile.first_name, profile.middle_name, profile.last_name].filter(Boolean).join(' ');
+            const address = [profile.baranggay, profile.street, profile.city, profile.zip_code].filter(Boolean).join(', ');
+            document.getElementById('popupProfileName').textContent = fullName;
+            document.getElementById('popupProfileRole').textContent = profile.role;
+            document.getElementById('popupProfileFullName').textContent = fullName;
+            document.getElementById('popupProfileMobile').textContent = profile.mobile_number;
+            document.getElementById('popupProfileAddress').textContent = address;
+            document.getElementById('headerProfileName').textContent = fullName;
+            document.getElementById('headerProfileRole').textContent = profile.role;
+          } else {
+            alert('Profile data not found. Please check your backend and database.');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Could not fetch profile info. Backend may not be running.');
+        });
+      } else {
+        alert('User is not logged in. Mobile number not found in localStorage.');
+      }
+    });
+
+    // Profile popup logic
+    const profileBox = document.querySelector('.profile-box');
+    const profilePopup = document.getElementById('profilePopup');
+    profileBox.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (profilePopup.style.display === 'none' || profilePopup.style.display === '') {
+        profilePopup.style.display = 'block';
+      } else {
+        profilePopup.style.display = 'none';
+      }
+    });
+    document.addEventListener('mousedown', function(e) {
+      if (profilePopup.style.display === 'block' && !profilePopup.contains(e.target) && !profileBox.contains(e.target)) {
+        profilePopup.style.display = 'none';
+      }
+    });
+
+    // Sidebar toggle logic
+    const sidebar = document.getElementById('dashboardSidebar');
+    const main = document.querySelector('.dashboard-main');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    toggleBtn.addEventListener('click', function() {
+      sidebar.classList.toggle('collapsed');
+      if (sidebar.classList.contains('collapsed')) {
+        main.style.marginLeft = '70px';
+      } else {
+        main.style.marginLeft = '240px';
+      }
+    });
+
+    // Logout functionality with confirmation modal
+    const logoutMenu = document.getElementById('logoutMenu');
+    const logoutModal = document.getElementById('logoutModal');
+    const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+    const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+
+    logoutMenu.addEventListener('click', function(e) {
+      e.preventDefault();
+      logoutModal.style.display = 'flex';
+    });
+
+    confirmLogoutBtn.addEventListener('click', function() {
+      window.location.href = 'HomePage.html';
+    });
+
+    cancelLogoutBtn.addEventListener('click', function() {
+      logoutModal.style.display = 'none';
+    });
+
+    logoutModal.addEventListener('mousedown', function(e) {
+      if (e.target === logoutModal) {
+        logoutModal.style.display = 'none';
+      }
+    });
+
+    // Activity log data
+    const activityLogData = [
+      { crop: 'Tomato', color: 'Green', condition: 'Damaged', sorted: 'Middle Basket', size: "Small" , time: '2025-07-08 09:14:12 AM' },
+      { crop: 'Tomato', color: 'Red', condition: 'Not Damaged', sorted: 'Right Basket', size: "Large" , time: '2025-07-08 09:14:43 AM' },
+      { crop: 'Tomato', color: 'Red', condition: 'Damaged', sorted: 'Middle Basket', size: "Medium" , time: '2025-07-08 09:15:14 AM' },
+      { crop: 'Tomato', color: 'Red', condition: 'Not Damaged', sorted: 'Right Basket', size: "Medium" , time: '2025-07-08 09:15:40 AM' },
+      { crop: 'Tomato', color: 'Red', condition: 'Damaged', sorted: 'Middle Basket', size: "Large" , time: '2025-07-08 09:16:09 AM' },
+      { crop: 'Tomato', color: 'Green', condition: 'Not Damaged', sorted: 'Left Basket', size: "Small" ,time: '2025-07-08 09:16:38 AM' },
+      { crop: 'Tomato', color: 'Red', condition: 'Damaged', sorted: 'Middle Basket', size: "Small" , time: '2025-07-08 09:17:03 AM' },
+      { crop: 'Tomato', color: 'Green', condition: 'Damaged', sorted: 'Middle Basket', size: "Medium" , time: '2025-07-08 09:17:31 AM' },
+      { crop: 'Bell Pepper', color: 'Green', condition: 'Not Damaged', sorted: 'Left Basket', size: "Large" , time: '2025-07-08 09:18:02 AM' },
+      { crop: 'Bell Pepper', color: 'Red', condition: 'Damaged', sorted: 'Middle Basket', size: "Large" , time: '2025-07-08 09:18:25 AM' },
+      { crop: 'Bell Pepper', color: 'Red', condition: 'Not Damaged', sorted: 'Right Basket', size: "Small" , time: '2025-07-08 09:18:47 AM' },
+      { crop: 'Bell Pepper', color: 'Green', condition: 'Damaged', sorted: 'Middle Basket', size: "Medium" , time: '2025-07-08 09:19:10 AM' }
+    ];
+
+    
+function renderActivityLogTable(filterSort = 'all', filterDate = '') {
+  const tbody = document.getElementById('activityLogTbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  let hasData = false;
+  activityLogData.forEach(row => {
+    const rowDate = row.time.slice(0, 10);
+    let match = false;
+    switch (filterSort) {
+      case 'all':
+        match = true;
+        break;
+      case 'tomato':
+        match = row.crop.toLowerCase() === 'tomato';
+        break;
+      case 'bellpepper':
+        match = row.crop.toLowerCase().replace(' ', '') === 'bellpepper';
+        break;
+      case 'notdamagedred':
+        match = row.condition === 'Not Damaged' && row.color.toLowerCase() === 'red';
+        break;
+      case 'notdamagedgreen':
+        match = row.condition === 'Not Damaged' && row.color.toLowerCase() === 'green';
+        break;
+      case 'damaged':
+        match = row.condition === 'Damaged';
+        break;
+      case 'small':
+        match = (row.size || '').toLowerCase() === 'small';
+        break;
+      case 'medium':
+        match = (row.size || '').toLowerCase() === 'medium';
+        break;
+      case 'large':
+        match = (row.size || '').toLowerCase() === 'large';
+        break;
+      default:
+        match = true;
+    }
+    const matchDate = (!filterDate || rowDate === filterDate);
+    if (match && matchDate) {
+      hasData = true;
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '2px solid #e0e0e0';
+      tr.innerHTML = `
+        <td>${row.crop}</td>
+        <td>${row.color}</td>
+        <td>${row.condition}</td>
+        <td>${row.sorted}</td>
+        <td>${row.size || ''}</td>
+        <td>${row.time}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+  });
+  if (!hasData) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="6" style="text-align:center;color:#888;padding:24px 0;">No activity log for this day.</td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+
+    // Listen for crop sort changes
+    document.getElementById('activitySort').addEventListener('change', function() {
+      const filterCrop = this.value;
+      const filterDate = document.getElementById('activityDateFilter').value;
+      renderActivityLogTable(filterCrop, filterDate);
+    });
+
+    // Listen for date filter changes
+    document.getElementById('activityDateFilter').addEventListener('change', function() {
+      const filterDate = this.value;
+      const filterCrop = document.getElementById('activitySort').value;
+      renderActivityLogTable(filterCrop, filterDate);
+    });
+
+    // Initial render
+    renderActivityLogTable();
+  </script>
+</body>
+</html>
