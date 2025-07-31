@@ -184,9 +184,9 @@
   box-shadow: 0 8px 32px rgba(0,0,0,0.18);
   border-radius: 18px;
   padding: 32px 32px 18px 32px;
-  min-width: 340px;
-  max-width: 700px;
-  width: 90vw;
+  min-width: 360px;
+  max-width: 800px;
+  width: 770;
   position: relative;
   backdrop-filter: blur(6px);
   display: flex;
@@ -224,8 +224,8 @@
 
 .signup-row {
   display: flex;
-  gap: 18px;
-  margin-bottom: 18px;
+  gap: 10px;
+  margin-bottom: 30px;
   flex-wrap: wrap;
 }
 
@@ -239,7 +239,7 @@
 .signup-field label {
   font-size: 1rem;
   color: #2d3a1f;
-  margin-bottom: 6px;
+  margin-bottom: 0px;
   font-weight: 600;
 }
 
@@ -257,10 +257,40 @@
   border-color: #3b7a2a;
 }
 
+.signup-field select {
+  /* appearance: none; */   /* Remove or comment out this line */
+  background: #fff;
+  border-radius: 18px;
+  border: 1.5px solid #e6f4e6;
+  padding: 10px 18px;
+  font-size: 1.1rem;
+  outline: none;
+  transition: border 0.2s;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+}
+.signup-field select:focus {
+  border-color: #3b7a2a;
+}
+
+.signup-field select option {
+  color: #222;
+  background: #fff;
+}
+
+.signup-field select#roleSelect {
+  max-width: 160px;   /* Limit the width of the role dropdown */
+  min-width: 80px;    /* Optional: minimum width */
+  padding: 8px 10px;  /* Adjust padding if needed */
+  font-size: 1rem;
+}
+
 .signup-actions {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
+  justify-content: center;   /* Center horizontally */
+  align-items: center;
+  margin-top: 32px;
+  margin-bottom: 0;
 }
 
 .signup-btn {
@@ -280,8 +310,8 @@
 }
 
 .signup-footer {
-  text-align: right;
-  margin-top: 10px;
+  text-align: center;        /* Center the text */
+  margin-top: 16px;
   font-size: 1rem;
   color: #222;
 }
@@ -292,6 +322,17 @@
   font-weight: 600;
 }
 
+.signup-field input,
+.signup-field label,
+.signup-modal-content select {
+  font-size: 1rem;   /* Reduce input and label text size */
+  padding: 9px 14px;    /* Slightly smaller padding for inputs */
+}
+.signup-field label {
+  margin-bottom: 0px;   /* Slightly less space below label */
+   line-height: 0.9;  
+}
+
 @media (max-width: 700px) {
   .signup-modal-content {
     padding: 18px 4vw 12px 4vw;
@@ -300,6 +341,14 @@
     flex-direction: column;
     gap: 8px;
   }
+}
+
+.signup-row:nth-of-type(3) .signup-field {
+  margin-left: 0;
+}
+
+.signup-row:nth-of-type(3) .signup-field:nth-child(2) {
+  margin-left: -40px; /* Move Mobile Number closer to Role */
 }
   </style>
 </head>
@@ -329,19 +378,20 @@
     <div class="homepage-right"></div> <!-- Add this for the right half -->
   </div>
     <!-- Sign Up Modal (centered) -->
-     <div class="signup-modal" id="signupModal" style="display:none;">
+    <div class="signup-modal" id="signupModal" style="display:none;">
       <div class="signup-modal-content">
         <button class="signup-close" onclick="document.getElementById('signupModal').style.display='none'">&times;</button>
         <h2>Sign Up</h2>
         <hr>
         <form id="signupForm">
+          <!-- First row: First, Middle, Last Name -->
           <div class="signup-row">
             <div class="signup-field">
               <label>First Name</label>
               <input type="text" placeholder="Enter First Name" required>
             </div>
             <div class="signup-field">
-              <label>Middle Name</label>
+              <label>Middle Name <span style="color:#888;font-weight:400;font-size:0.95em;">(optional)</span></label>
               <input type="text" placeholder="Enter Middle Name">
             </div>
             <div class="signup-field">
@@ -349,14 +399,112 @@
               <input type="text" placeholder="Enter Last Name" required>
             </div>
           </div>
+          <!-- Second row: Barangay, Street, City, Zip Code -->
           <div class="signup-row">
             <div class="signup-field">
-              <label>Mobile Number</label>
-              <input type="text" placeholder="Enter Mobile Number" required>
-            </div>
-            <div class="signup-field">
-              <label>Baranggay</label>
-              <input type="text" placeholder="Enter Baranggay">
+              <label>Barangay</label>
+              <select id="barangaySelect" required>
+                <option value="" disabled selected>Select Barangay</option>
+                <option>Arena Blanco</option>
+                <option>Ayala</option>
+                <option>Baliwasan</option>
+                <option>Baluno</option>
+                <option>Boalan</option>
+                <option>Bolong</option>
+                <option>Buenavista</option>
+                <option>Bunguiao</option>
+                <option>Busay (Sacol Island)</option>
+                <option>Cabaluay</option>
+                <option>Cabatangan</option>
+                <option>Cacao</option>
+                <option>Calabasa</option>
+                <option>Calarian</option>
+                <option>Camino Nuevo</option>
+                <option>Campo Islam</option>
+                <option>Canelar</option>
+                <option>Capisan</option>
+                <option>Cawit</option>
+                <option>Culianan</option>
+                <option>Curuan</option>
+                <option>Dita</option>
+                <option>Divisoria</option>
+                <option>Dulian (Upper Bunguiao)</option>
+                <option>Dulian (Upper Pasonanca)</option>
+                <option>Guisao</option>
+                <option>Guiwan</option>
+                <option>Kasanyangan</option>
+                <option>La Paz</option>
+                <option>Labuan</option>
+                <option>Lamisahan</option>
+                <option>Landang Gua</option>
+                <option>Landang Laum</option>
+                <option>Lanzones</option>
+                <option>Lapakan</option>
+                <option>Latuan (Curuan)</option>
+                <option>Licomo</option>
+                <option>Limaong</option>
+                <option>Limpapa</option>
+                <option>Lubigan</option>
+                <option>Lumayang</option>
+                <option>Lumbangan</option>
+                <option>Lunzuran</option>
+                <option>Maasin</option>
+                <option>Malagutay</option>
+                <option>Mampang</option>
+                <option>Manalipa</option>
+                <option>Mangusu</option>
+                <option>Manicahan</option>
+                <option>Mariki</option>
+                <option>Mercedes</option>
+                <option>Muti</option>
+                <option>Pamucutan</option>
+                <option>Pangapuyan</option>
+                <option>Panubigan</option>
+                <option>Pasilmanta (Sacol Island)</option>
+                <option>Pasobolong</option>
+                <option>Pasonanca</option>
+                <option>Patalon</option>
+                <option>Putik</option>
+                <option>Quiniput</option>
+                <option>Recodo</option>
+                <option>Rio Hondo</option>
+                <option>Salaan</option>
+                <option>Sangali</option>
+                <option>San Jose Cawa-cawa</option>
+                <option>San Jose Gusu</option>
+                <option>San Ramon</option>
+                <option>San Roque</option>
+                <option>Santa Barbara</option>
+                <option>Santa Catalina</option>
+                <option>Santa Maria</option>
+                <option>Santo Niño</option>
+                <option>Sibulao (Curuan)</option>
+                <option>Sinubung</option>
+                <option>Sinunuc</option>
+                <option>Tagasilay</option>
+                <option>Taguiti</option>
+                <option>Talabaan</option>
+                <option>Talisayan</option>
+                <option>Talon-talon</option>
+                <option>Taluksangay</option>
+                <option>Tetuan</option>
+                <option>Tictapul</option>
+                <option>Tigbalabag</option>
+                <option>Tigtabon</option>
+                <option>Tolosa</option>
+                <option>Tugbungan</option>
+                <option>Tulungan</option>
+                <option>Tumaga</option>
+                <option>Tumalutap</option>
+                <option>Tumitus</option>
+                <option>Victoria</option>
+                <option>Vitali</option>
+                <option>Zambowood</option>
+                <option>Zone I (Poblacion)</option>
+                <option>Zone II (Poblacion)</option>
+                <option>Zone III (Poblacion)</option>
+                <option>Zone IV (Poblacion)</option>
+              </select>
             </div>
             <div class="signup-field">
               <label>Street</label>
@@ -371,15 +519,8 @@
               <input type="text" placeholder="Enter Zip Code">
             </div>
           </div>
+          <!-- Third row: Role, Mobile Number, Password, Confirm Password -->
           <div class="signup-row">
-            <div class="signup-field">
-              <label>Password</label>
-              <input type="password" placeholder="Enter Password" required>
-            </div>
-            <div class="signup-field">
-              <label>Confirm Password</label>
-              <input type="password" placeholder="Enter Confirm Password" required>
-            </div>
             <div class="signup-field">
               <label>Role</label>
               <select id="roleSelect" required>
@@ -387,6 +528,18 @@
                 <option value="farmer">Farmer</option>
                 <option value="vendor">Vendor</option>
               </select>
+            </div>
+            <div class="signup-field">
+              <label>Mobile Number</label>
+              <input type="text" placeholder="Enter Mobile Number" required>
+            </div>
+            <div class="signup-field">
+              <label>Password</label>
+              <input type="password" placeholder="Enter Password" required>
+            </div>
+            <div class="signup-field">
+              <label>Confirm Password</label>
+              <input type="password" placeholder="Enter Confirm Password" required>
             </div>
           </div>
           <div class="signup-actions">
@@ -434,12 +587,14 @@
         if (input.placeholder.includes('Middle Name')) data.middle_name = input.value;
         if (input.placeholder.includes('Last Name')) data.last_name = input.value;
         if (input.placeholder.includes('Mobile Number')) data.mobile_number = input.value;
-        if (input.placeholder.includes('Baranggay')) data.baranggay = input.value;
         if (input.placeholder.includes('Street')) data.street = input.value;
         if (input.placeholder.includes('City')) data.city = input.value;
         if (input.placeholder.includes('Zip Code')) data.zip_code = input.value;
         if (input.placeholder === 'Enter Password') data.password = input.value;
       });
+      // Get barangay value from select
+      const barangaySelect = document.getElementById('barangaySelect');
+      data.baranggay = barangaySelect ? barangaySelect.value : '';
       // Get role value and add to data
       const roleSelect = document.getElementById('roleSelect');
       data.role = roleSelect ? roleSelect.value : '';

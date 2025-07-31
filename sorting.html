@@ -499,8 +499,9 @@
       background: #4CAF50;
       color: #fff;
       border: none;
-      padding: 6px 18px;
-      border-radius: 8px;
+      padding: 8px 12px;      /* Increase vertical and horizontal padding */
+  font-size: 0.9rem;         /* Larger text */
+  border-radius: 10px;     /* More rounded corners */
       font-weight: 600;
       box-shadow: 0 2px 6px #b2d8b2;
       margin-left: 10px;
@@ -521,14 +522,12 @@
       gap: 32px;
       margin-bottom: 32px;
     }
-    .sorting-feed, .sorting-result {
-      background: #f9f6f6;
-      border-radius: 10px;
-      box-shadow: 0 6px 18px #e0e0e0;
-      padding: 18px 24px;
-      min-width: 340px;
-      flex: 1;
-      padding: 18px 24px;
+    .sorting-feed,
+.sorting-result {
+  background: #fff; /* Make container white for visibility */
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(44, 62, 80, 0.18); /* Add a soft shadow */
+  padding: 24px 32px;
   min-width: 340px;
   flex: 1;
   display: flex;
@@ -575,10 +574,9 @@
     }
     .sorting-result-table {
       width: 100%;
-      font-size: 1.1rem;
     }
     .sorting-result-table td {
-      padding: 6px 0;
+      width: 50%;
     }
     .sorting-baskets {
       background: #e0e0e0;
@@ -626,6 +624,36 @@
 }
 #activityLogTable th {
   border: none !important;
+}
+.result-display {
+  display: inline-block;
+  width: 320px;         /* Fixed width for static white area */
+  max-width: 320px;     /* Prevents growing beyond this */
+  min-width: 320px;     /* Prevents shrinking below this */
+  background: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 1rem;
+  color: #222;
+  box-sizing: border-box;
+  min-height: 35px;
+  vertical-align: middle;
+  pointer-events: none;
+}
+#cropMsg {
+  min-height: 18px;        /* Reserve space for the message */
+  display: block;
+  position: absolute;      /* Position it over or below the dropdown */
+  left: 0;
+  width: 100%;
+  z-index: 10;
+}
+.sorting-controls {
+  position: relative;      /* Make parent relative for absolute child */
+}
+.sorting-feed {
+  margin-top: 10px; /* Increase this value to move the camera feed lower */
 }
   </style>
 </head>
@@ -699,30 +727,30 @@
         </div>
         <div class="sorting-result">
           <div class="sorting-result-title">Classification Result</div>
-          <table class="sorting-result-table">
+                    <table class="sorting-result-table">
             <tr>
               <td style="font-weight:600;">Crop Type:</td>
-              <td><input id="class-crop" type="text" style="width:90%;padding:4px 6px;"></td>
+              <td><span id="class-crop" class="result-display"></span></td>
             </tr>
             <tr>
               <td style="font-weight:600;">Condition:</td>
-              <td><input id="class-condition" type="text" style="width:90%;padding:4px 6px;"></td>
+              <td><span id="class-condition" class="result-display"></span></td>
             </tr>
             <tr>
               <td style="font-weight:600;">Color:</td>
-              <td><input id="class-color" type="text" style="width:90%;padding:4px 6px;"></td>
+              <td><span id="class-color" class="result-display"></span></td>
             </tr>
             <tr>
               <td style="font-weight:600;">Sorted to:</td>
-              <td><input id="class-sorted" type="text" style="width:90%;padding:4px 6px;"></td>
+              <td><span id="class-sorted" class="result-display"></span></td>
             </tr>
             <tr>
               <td style="font-weight:600;">Size:</td>
-              <td><input id="class-size" type="text" style="width:90%;padding:4px 6px;"></td>
+              <td><span id="class-size" class="result-display"></span></td>
             </tr>
             <tr>
               <td style="font-weight:600;">Time Detected:</td>
-              <td><input id="class-time" type="text" style="width:90%;padding:4px 6px;"></td>
+              <td><span id="class-time" class="result-display"></span></td>
             </tr>
           </table>
         </div>
@@ -813,18 +841,45 @@
     // Sorting status logic
     const startSortingBtn = document.querySelector('.sorting-controls button');
     const sortingStatus = document.querySelector('.sorting-status');
+    const cropSelect = document.getElementById('cropSelect');
     let isSorting = false;
 
+    // Set initial button icon and text when page loads
+startSortingBtn.innerHTML = '<span style="display:inline-block;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid #fff;margin-right:7px;vertical-align:middle;"></span><span style="vertical-align:middle;">Start Sorting</span>';
+startSortingBtn.style.background = '#4CAF50';
+
     startSortingBtn.addEventListener('click', function() {
+      if (!cropSelect.value) {
+        let msg = document.getElementById('cropMsg');
+        if (!msg) {
+          msg = document.createElement('div');
+          msg.id = 'cropMsg';
+          msg.style.color = 'red';
+          msg.style.fontWeight = '500';
+          msg.style.fontSize = '0.95rem';
+          msg.style.marginTop = '8px';
+          cropSelect.parentNode.appendChild(msg);
+        }
+        msg.textContent = 'Please select a croptype';
+        setTimeout(() => {
+          if (msg) msg.remove();
+        }, 3000);
+        return;
+      } else {
+        const msg = document.getElementById('cropMsg');
+        if (msg) msg.remove();
+      }
       if (!isSorting) {
         isSorting = true;
         sortingStatus.innerHTML = '<span class="status-dot" style="color:green;">●</span> Running';
-        startSortingBtn.textContent = 'Stop Sorting';
+        // Smaller square icon for Stop Sorting
+        startSortingBtn.innerHTML = '<span style="display:inline-block;width:13px;height:13px;background:#fff;border-radius:3px;margin-right:7px;vertical-align:middle;"></span><span style="vertical-align:middle;">Stop Sorting</span>';
         startSortingBtn.style.background = '#d9534f';
       } else {
         isSorting = false;
         sortingStatus.innerHTML = '<span class="status-dot" style="color:red;">●</span> Stopped Running';
-        startSortingBtn.textContent = 'Start Sorting';
+        // Smaller triangle icon for Start Sorting
+        startSortingBtn.innerHTML = '<span style="display:inline-block;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid #fff;margin-right:7px;vertical-align:middle;"></span><span style="vertical-align:middle;">Start Sorting</span>';
         startSortingBtn.style.background = '#4CAF50';
       }
     });
@@ -846,9 +901,6 @@
           liveCam.innerHTML = "Unable to access camera";
         });
     }
-
-    // Set initial button color
-    startSortingBtn.style.background = '#4CAF50';
 
     // Logout functionality with confirmation modal
     const logoutMenu = document.getElementById('logoutMenu');
@@ -874,6 +926,13 @@
         logoutModal.style.display = 'none';
       }
     });
+
+    // Automatically display selected crop type in Classification Result
+document.getElementById('cropSelect').addEventListener('change', function() {
+  const selectedCrop = this.options[this.selectedIndex].text;
+  document.getElementById('class-crop').textContent = selectedCrop === "Please select" ? "" : selectedCrop;
+});
+
   </script>
 </body>
 </html>
