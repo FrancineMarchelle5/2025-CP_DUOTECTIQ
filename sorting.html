@@ -533,6 +533,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: -5px;
 }
 #liveCam {
   width: 100%;
@@ -566,10 +567,10 @@
       box-shadow: 0 6px 18px #bdbdbd;
     }
     .sorting-result-title {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 700;
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 25px;
       text-shadow: 0 2px 8px #fff;
     }
     .sorting-result-table {
@@ -579,14 +580,16 @@
       width: 50%;
     }
     .sorting-baskets {
-      background: #e0e0e0;
-      border-radius: 10px;
-      box-shadow: 0 6px 18px #bdbdbd;
-      padding: 32px 24px;
-      margin-top: 32px;
+      background: #D9D9D9;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(44, 62, 80, 0.28), 0 2px 8px #bdbdbd;
+      border: 0.3px solid #bdbdbd;
+      padding: 18px 18px;
+      margin-top: 28px;
+      transition: box-shadow 0.2s;
     }
     .sorting-baskets-title {
-      font-size: 2rem;
+      font-size: 1.5rem;
       font-weight: 600;
       text-align: center;
       margin-bottom: 18px;
@@ -594,14 +597,14 @@
     .sorting-baskets-btns {
       display: flex;
       justify-content: center;
-      gap: 200px;
+      gap: 220px;
     }
     .sorting-baskets-btns button {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 600;
       border: none;
       border-radius: 18px;
-      padding:25px 40px;
+      padding:25px 30px;
       box-shadow: 0 4px 12px #b2d8b2;
       cursor: pointer;
       transition: background 0.2s;
@@ -627,9 +630,9 @@
 }
 .result-display {
   display: inline-block;
-  width: 320px;         /* Fixed width for static white area */
-  max-width: 320px;     /* Prevents growing beyond this */
-  min-width: 320px;     /* Prevents shrinking below this */
+  width: 320px;
+  max-width: 320px;
+  min-width: 320px;
   background: #fff;
   border: 1.5px solid #ccc;
   border-radius: 8px;
@@ -640,6 +643,7 @@
   min-height: 35px;
   vertical-align: middle;
   pointer-events: none;
+  margin-bottom: 4px;   /* Add this line for vertical gap */
 }
 #cropMsg {
   min-height: 18px;        /* Reserve space for the message */
