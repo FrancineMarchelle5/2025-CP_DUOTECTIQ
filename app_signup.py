@@ -13,14 +13,14 @@ def insert_user(data):
     try:
         c.execute('''
             INSERT INTO tbl_users
-            (first_name, middle_name, last_name, mobile_number, baranggay, street, city, zip_code, password, role)
+            (first_name, middle_name, last_name, mobile_number, barangay, street, city, zip_code, password, role)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             data['first_name'],
             data['middle_name'],
             data['last_name'],
             data['mobile_number'],
-            data['baranggay'],
+            data['barangay'],
             data['street'],
             data['city'],
             data['zip_code'],
@@ -68,7 +68,7 @@ def profile():
         return jsonify({'success': False, 'message': 'Missing mobile number.'}), 400
     conn = sqlite3.connect('duotectdb.sqlite3')
     c = conn.cursor()
-    c.execute('SELECT first_name, middle_name, last_name, mobile_number, baranggay, street, city, zip_code, role FROM tbl_users WHERE mobile_number=?', (mobile,))
+    c.execute('SELECT first_name, middle_name, last_name, mobile_number, barangay, street, city, zip_code, role FROM tbl_users WHERE mobile_number=?', (mobile,))
     user = c.fetchone()
     conn.close()
     if user:
@@ -79,7 +79,7 @@ def profile():
                 'middle_name': user[1],
                 'last_name': user[2],
                 'mobile_number': user[3],
-                'baranggay': user[4],
+                'barangay': user[4],
                 'street': user[5],
                 'city': user[6],
                 'zip_code': user[7],
