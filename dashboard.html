@@ -307,12 +307,13 @@
     .summary-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 1.08rem;
+      font-size: 1.0rem;
       background: #fff;
     }
     .summary-table th, .summary-table td {
-      padding: 10px 14px;
+      padding: 8px 10px;
       text-align: center;
+      font-size: 0.90rem;
     }
     .summary-table th {
       background: #f4f4f4;
@@ -737,13 +738,13 @@
         </thead>
         <tbody>
           <tr>
-            <td>Not Damaged- Red</td>
+            <td>Not Damaged Red</td>
             <td>15</td>
             <td>12</td>
             <td>27</td>
           </tr>
           <tr>
-            <td>Not Damaged- Green</td>
+            <td>Not Damaged Green</td>
             <td>20</td>
             <td>14</td>
             <td>34</td>
@@ -754,8 +755,31 @@
             <td>8</td>
             <td>17</td>
           </tr>
+          <!-- Sub-summary for Size -->
           <tr>
-            <td>Total Pieces</td>
+            <td style="font-weight:bold;" colspan="4">Size Breakdown</td>
+          </tr>
+          <tr>
+            <td style="padding-left:2em;">Small</td>
+            <td>12</td>
+            <td>5</td>
+            <td>17</td>
+          </tr>
+          <tr>
+            <td style="padding-left:2em;">Medium</td>
+            <td>10</td>
+            <td>15</td>
+            <td>25</td>
+          </tr>
+          <tr>
+            <td style="padding-left:2em;">Large</td>
+            <td>13</td>
+            <td>6</td>
+            <td>19</td>
+          </tr>
+          <!-- End sub-summary -->
+          <tr>
+            <td style="font-weight:bold;">Total Pieces</td>
             <td>44</td>
             <td>34</td>
             <td>78</td>
@@ -862,15 +886,47 @@
 
   // Summary Table Logic
   const summaryData = [
-    { date: '2025-07-01', tomato: { red: 5, green: 8, damaged: 2 }, bellpepper: { red: 3, green: 4, damaged: 1 } },
-    { date: '2025-07-02', tomato: { red: 7, green: 6, damaged: 3 }, bellpepper: { red: 2, green: 5, damaged: 2 } },
-    { date: '2025-07-03', tomato: { red: 6, green: 7, damaged: 1 }, bellpepper: { red: 4, green: 3, damaged: 2 } },
-    { date: '2025-07-04', tomato: { red: 8, green: 5, damaged: 2 }, bellpepper: { red: 3, green: 6, damaged: 1 } },
-    { date: '2025-07-05', tomato: { red: 9, green: 6, damaged: 2 }, bellpepper: { red: 5, green: 2, damaged: 3 } },
-    { date: '2025-07-06', tomato: { red: 4, green: 8, damaged: 3 }, bellpepper: { red: 6, green: 4, damaged: 2 } },
-    { date: '2025-07-07', tomato: { red: 7, green: 7, damaged: 2 }, bellpepper: { red: 2, green: 5, damaged: 1 } },
-    { date: '2025-07-08', tomato: { red: 8, green: 9, damaged: 1 }, bellpepper: { red: 3, green: 7, damaged: 2 } }
-  ];
+  {
+    date: '2025-07-01',
+    tomato: { red: 5, green: 8, damaged: 2, small: 2, medium: 6, large: 7 },
+    bellpepper: { red: 3, green: 4, damaged: 1, small: 1, medium: 4, large: 3 }
+  },
+  {
+    date: '2025-07-02',
+    tomato: { red: 7, green: 6, damaged: 3, small: 3, medium: 5, large: 8 },
+    bellpepper: { red: 2, green: 5, damaged: 2, small: 2, medium: 3, large: 2 }
+  },
+  {
+    date: '2025-07-03',
+    tomato: { red: 6, green: 7, damaged: 1, small: 1, medium: 7, large: 5 },
+    bellpepper: { red: 4, green: 3, damaged: 2, small: 1, medium: 2, large: 4 }
+  },
+  {
+    date: '2025-07-04',
+    tomato: { red: 8, green: 5, damaged: 2, small: 2, medium: 6, large: 7 },
+    bellpepper: { red: 3, green: 6, damaged: 1, small: 2, medium: 5, large: 2 }
+  },
+  {
+    date: '2025-07-05',
+    tomato: { red: 9, green: 6, damaged: 2, small: 4, medium: 6, large: 7 },
+    bellpepper: { red: 5, green: 2, damaged: 3, small: 2, medium: 2, large: 3 }
+  },
+  {
+    date: '2025-07-06',
+    tomato: { red: 4, green: 8, damaged: 3, small: 2, medium: 5, large: 8 },
+    bellpepper: { red: 6, green: 4, damaged: 2, small: 1, medium: 4, large: 5 }
+  },
+  {
+    date: '2025-07-07',
+    tomato: { red: 7, green: 7, damaged: 2, small: 3, medium: 6, large: 7 },
+    bellpepper: { red: 2, green: 5, damaged: 1, small: 2, medium: 3, large: 2 }
+  },
+  {
+    date: '2025-07-08',
+    tomato: { red: 8, green: 9, damaged: 1, small: 2, medium: 7, large: 6 },
+    bellpepper: { red: 3, green: 7, damaged: 2, small: 2, medium: 5, large: 3 }
+  }
+];
 
   function renderSummaryTable(startDate, endDate, sortType = 'all') {
     let filtered = summaryData;
@@ -879,17 +935,24 @@
         row.date >= startDate && row.date <= endDate
       );
     }
+    // Sum up main categories
     const total = filtered.reduce((acc, row) => {
       acc.tomato.red += row.tomato.red;
       acc.tomato.green += row.tomato.green;
       acc.tomato.damaged += row.tomato.damaged;
+      acc.tomato.small += row.tomato.small || 0;
+      acc.tomato.medium += row.tomato.medium || 0;
+      acc.tomato.large += row.tomato.large || 0;
       acc.bellpepper.red += row.bellpepper.red;
       acc.bellpepper.green += row.bellpepper.green;
       acc.bellpepper.damaged += row.bellpepper.damaged;
+      acc.bellpepper.small += row.bellpepper.small || 0;
+      acc.bellpepper.medium += row.bellpepper.medium || 0;
+      acc.bellpepper.large += row.bellpepper.large || 0;
       return acc;
     }, {
-      tomato: { red: 0, green: 0, damaged: 0 },
-      bellpepper: { red: 0, green: 0, damaged: 0 }
+      tomato: { red: 0, green: 0, damaged: 0, small: 0, medium: 0, large: 0 },
+      bellpepper: { red: 0, green: 0, damaged: 0, small: 0, medium: 0, large: 0 }
     });
 
     let rows = '';
@@ -933,12 +996,38 @@
       bellpepperTotal += total.bellpepper.damaged;
     }
 
+    // --- Size Sub-summary ---
     rows += `
       <tr>
-        <td>Total Pieces</td>
-        <td><b>${tomatoTotal}</b></td>
-        <td><b>${bellpepperTotal}</b></td>
-        <td><b>${tomatoTotal + bellpepperTotal}</b></td>
+        <td style="font-weight:bold;" colspan="4">Size Breakdown</td>
+      </tr>
+      <tr>
+        <td style="padding-left:2em;">Small</td>
+        <td>${total.tomato.small}</td>
+        <td>${total.bellpepper.small}</td>
+        <td>${total.tomato.small + total.bellpepper.small}</td>
+      </tr>
+      <tr>
+        <td style="padding-left:2em;">Medium</td>
+        <td>${total.tomato.medium}</td>
+        <td>${total.bellpepper.medium}</td>
+        <td>${total.tomato.medium + total.bellpepper.medium}</td>
+      </tr>
+      <tr>
+        <td style="padding-left:2em;">Large</td>
+        <td>${total.tomato.large}</td>
+        <td>${total.bellpepper.large}</td>
+        <td>${total.tomato.large + total.bellpepper.large}</td>
+      </tr>
+    `;
+    // --- End Size Sub-summary ---
+
+    rows += `
+      <tr>
+        <td style="font-weight:bold;">Total Pieces</td>
+        <td>${tomatoTotal}</td>
+        <td>${bellpepperTotal}</td>
+        <td>${tomatoTotal + bellpepperTotal}</td>
       </tr>
     `;
 
