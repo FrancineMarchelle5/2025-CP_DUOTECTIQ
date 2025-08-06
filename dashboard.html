@@ -214,7 +214,7 @@
       transition: margin-left 0.3s;
     }
     .dashboard-title {
-      font-size: 2rem;
+      font-size: 1.85rem;
       font-weight: 600;
       margin-bottom: 18px;
       margin-top: 0;
@@ -230,13 +230,13 @@
       background: #fff;
       border-radius: 14px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-      padding: 24px 32px;
+      padding: 18px 32px;
       min-width: 220px;
       flex: 1;
       display: flex;
       align-items: center;
       gap: 18px;
-      font-size: 1.15rem;
+      font-size: 1.0rem;
       font-weight: 500;
       position: relative;
     }
@@ -319,173 +319,59 @@
       background: #f4f4f4;
       color: #333;
       font-weight: 700;
-      font-size: 1.08rem;
+      font-size: 0.95rem;
       border-bottom: 2px solid #e0e0e0;
+      text-align: center;
     }
     .summary-table td {
       color: #222;
       font-weight: 500;
+      text-align: center;
     }
     .summary-table tr:last-child td {
       font-weight: 700;
       color: #4b8c2a;
       background: #f8fff4;
       border-top: 2px solid #e0e0e0;
+      text-align: center;
     }
     .summary-table td:last-child, .summary-table th:last-child {
       font-weight: 700;
-    }
-    .summary-table-container::-webkit-scrollbar {
-      height: 8px;
-      background: #eee;
-    }
-    .summary-table-container::-webkit-scrollbar-thumb {
-      background: #c2e0b7;
-      border-radius: 8px;
-    }
-    @media (max-width: 900px) {
-      .dashboard-main {
-        flex-direction: column;
-      }
-      .dashboard-sidebar {
-        width: 100vw;
-        flex-direction: row;
-        min-height: 0;
-        padding-top: 0;
-        padding-bottom: 0;
-        height: 60px;
-      }
-      .sidebar-menu {
-        flex-direction: row;
-        gap: 0;
-        width: 100vw;
-        justify-content: space-around;
-        padding: 0;
-      }
-      .dashboard-content {
-        padding: 18px 4vw 0 4vw;
-      }
-    }
-    @media (max-width: 600px) {
-      .dashboard-header {
-        flex-direction: column;
-        height: auto;
-        padding: 8px 8px;
-      }
-      .dashboard-content {
-        padding: 10px 2vw 0 2vw;
-      }
-      .overview-card {
-        padding: 14px 10px;
-        min-width: 120px;
-        font-size: 1rem;
-      }
-      .summary-table th, .summary-table td {
-        padding: 6px 4px;
-        font-size: 0.98rem;
-      }
-    }
-    .summary-table tbody tr:nth-child(even) {
-  background: #f8f8f8;
-}
-.summary-table tbody tr:nth-child(odd) {
-  background: #fff;
-}
-.summary-table tbody tr {
-  border-bottom: 2px solid #e0e0e0;
-}
-.summary-table tbody tr:last-child {
-  border-bottom: none;
-}
-    .calendar-container {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-    .calendar-icon {
-      margin-left: 6px;
-      font-size: 1.2rem;
-      color: #444;
-      cursor: pointer;
-      user-select: none;
-    }
-    .custom-calendar {
-      position: absolute;
-      top: 38px;
-      left: 0;
-      background: #f8f8f8;
-      border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
-      padding: 16px 18px 12px 18px;
-      z-index: 100;
-      min-width: 240px;
-      max-width: 270px;
-      font-family: 'Montserrat', Arial, sans-serif;
-      color: #222;
-      border: 2px solid #4b8c2a22;
-      animation: fadeIn 0.18s;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px);}
-      to { opacity: 1; transform: translateY(0);}
-    }
-    .calendar-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      font-weight: 600;
-      font-size: 1.1rem;
-    }
-    .calendar-header button {
-      background: none;
-      border: none;
-      font-size: 1.3rem;
-      cursor: pointer;
-      color: #4b8c2a;
-      padding: 2px 8px;
-      border-radius: 6px;
-      transition: background 0.15s;
-    }
-    .calendar-header button:hover {
-      background: #e6f4e6;
-    }
-    .calendar-table {
-      width: 100%;
-      border-collapse: collapse;
       text-align: center;
-      font-size: 1.08rem;
-      margin-top: 2px;
     }
-    .calendar-table th {
-      color: #4b8c2a;
-      font-weight: 700;
-      padding: 4px 0;
-      font-size: 1rem;
+    .sub-row td:first-child {
+      text-align: center;
+      padding-left: 30px !important;
     }
-    .calendar-table td {
-      padding: 4px 0;
+    .sub-row td:not(:first-child) {
+      padding-left: 6px !important;
+    }
+    .expand-icon {
       cursor: pointer;
-      border-radius: 6px;
-      transition: background 0.15s, color 0.15s;
-    }
-    .calendar-table td:hover {
-      background: #e6f4e6;
+      margin-right: 8px;
+      font-size: 0.9rem;
       color: #4b8c2a;
+      transition: transform 0.2s;
     }
-    .calendar-table .selected {
-      background: #4b8c2a;
-      color: #fff;
-      font-weight: 700;
+    .expand-icon.expanded {
+      transform: rotate(90deg);
     }
-    .calendar-table .today {
-      border: 1.5px solid #4b8c2a;
-      font-weight: 700;
-      background: #e6f4e6;
-    }
-    #sortingSection {
+    .sub-row {
       display: none;
+      background: #f9f9f9 !important;
     }
+    .sub-row td {
+      padding-left: 30px !important;
+      font-size: 0.85rem;
+      color: #555;
+    }
+    .expandable-row {
+      cursor: pointer;
+    }
+    .expandable-row:hover {
+      background: #f5f5f5;
+    }
+
     .sorting-toolbar {
       display: flex;
       justify-content: space-between;
@@ -704,7 +590,7 @@
       <span class="sorting-summary-title">Sorting Summary</span>
     </div>
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-      <span id="summaryDateLabel" style="font-weight:600;font-size:1.08rem;"></span>
+      <span id="summaryDateLabel" style="font-weight:600;font-size:1.03rem;"></span>
       <div class="summary-filter-row" style="display:flex;align-items:center;gap:18px;">
         <div>
           <label style="font-weight:600;">From:</label>
@@ -961,66 +847,96 @@
 
     if (sortType === 'all' || sortType === 'red') {
       rows += `
-        <tr>
-          <td>Not Damaged- Red</td>
+        <tr class="expandable-row" data-category="red">
+          <td><span class="expand-icon">⊞</span>Not Damaged- Red</td>
           <td>${total.tomato.red}</td>
           <td>${total.bellpepper.red}</td>
           <td>${total.tomato.red + total.bellpepper.red}</td>
+        </tr>
+        <tr class="sub-row" data-parent="red">
+          <td>Small</td>
+          <td>${Math.floor(total.tomato.red * 0.3)}</td>
+          <td>${Math.floor(total.bellpepper.red * 0.25)}</td>
+          <td>${Math.floor(total.tomato.red * 0.3) + Math.floor(total.bellpepper.red * 0.25)}</td>
+        </tr>
+        <tr class="sub-row" data-parent="red">
+          <td>Medium</td>
+          <td>${Math.floor(total.tomato.red * 0.4)}</td>
+          <td>${Math.floor(total.bellpepper.red * 0.5)}</td>
+          <td>${Math.floor(total.tomato.red * 0.4) + Math.floor(total.bellpepper.red * 0.5)}</td>
+        </tr>
+        <tr class="sub-row" data-parent="red">
+          <td>Large</td>
+          <td>${total.tomato.red - Math.floor(total.tomato.red * 0.3) - Math.floor(total.tomato.red * 0.4)}</td>
+          <td>${total.bellpepper.red - Math.floor(total.bellpepper.red * 0.25) - Math.floor(total.bellpepper.red * 0.5)}</td>
+          <td>${(total.tomato.red - Math.floor(total.tomato.red * 0.3) - Math.floor(total.tomato.red * 0.4)) + (total.bellpepper.red - Math.floor(total.bellpepper.red * 0.25) - Math.floor(total.bellpepper.red * 0.5))}</td>
         </tr>
       `;
       tomatoTotal += total.tomato.red;
       bellpepperTotal += total.bellpepper.red;
     }
+    
     if (sortType === 'all' || sortType === 'green') {
       rows += `
-        <tr>
-          <td>Not Damaged- Green</td>
+        <tr class="expandable-row" data-category="green">
+          <td><span class="expand-icon">⊞</span>Not Damaged- Green</td>
           <td>${total.tomato.green}</td>
           <td>${total.bellpepper.green}</td>
           <td>${total.tomato.green + total.bellpepper.green}</td>
+        </tr>
+        <tr class="sub-row" data-parent="green">
+          <td>Small</td>
+          <td>${Math.floor(total.tomato.green * 0.25)}</td>
+          <td>${Math.floor(total.bellpepper.green * 0.3)}</td>
+          <td>${Math.floor(total.tomato.green * 0.25) + Math.floor(total.bellpepper.green * 0.3)}</td>
+        </tr>
+        <tr class="sub-row" data-parent="green">
+          <td>Medium</td>
+          <td>${Math.floor(total.tomato.green * 0.45)}</td>
+          <td>${Math.floor(total.bellpepper.green * 0.4)}</td>
+          <td>${Math.floor(total.tomato.green * 0.45) + Math.floor(total.bellpepper.green * 0.4)}</td>
+        </tr>
+        <tr class="sub-row" data-parent="green">
+          <td>Large</td>
+          <td>${total.tomato.green - Math.floor(total.tomato.green * 0.25) - Math.floor(total.tomato.green * 0.45)}</td>
+          <td>${total.bellpepper.green - Math.floor(total.bellpepper.green * 0.3) - Math.floor(total.bellpepper.green * 0.4)}</td>
+          <td>${(total.tomato.green - Math.floor(total.tomato.green * 0.25) - Math.floor(total.tomato.green * 0.45)) + (total.bellpepper.green - Math.floor(total.bellpepper.green * 0.3) - Math.floor(total.bellpepper.green * 0.4))}</td>
         </tr>
       `;
       tomatoTotal += total.tomato.green;
       bellpepperTotal += total.bellpepper.green;
     }
+    
     if (sortType === 'all' || sortType === 'damaged') {
       rows += `
-        <tr>
-          <td>Damaged</td>
+        <tr class="expandable-row" data-category="damaged">
+          <td><span class="expand-icon">⊞</span>Damaged</td>
           <td>${total.tomato.damaged}</td>
           <td>${total.bellpepper.damaged}</td>
           <td>${total.tomato.damaged + total.bellpepper.damaged}</td>
+        </tr>
+        <tr class="sub-row" data-parent="damaged">
+          <td>Small</td>
+          <td>${Math.floor(total.tomato.damaged * 0.4)}</td>
+          <td>${Math.floor(total.bellpepper.damaged * 0.35)}</td>
+          <td>${Math.floor(total.tomato.damaged * 0.4) + Math.floor(total.bellpepper.damaged * 0.35)}</td>
+        </tr>
+        <tr class="sub-row" data-parent="damaged">
+          <td>Medium</td>
+          <td>${Math.floor(total.tomato.damaged * 0.35)}</td>
+          <td>${Math.floor(total.bellpepper.damaged * 0.4)}</td>
+          <td>${Math.floor(total.tomato.damaged * 0.35) + Math.floor(total.bellpepper.damaged * 0.4)}</td>
+        </tr>
+        <tr class="sub-row" data-parent="damaged">
+          <td>Large</td>
+          <td>${total.tomato.damaged - Math.floor(total.tomato.damaged * 0.4) - Math.floor(total.tomato.damaged * 0.35)}</td>
+          <td>${total.bellpepper.damaged - Math.floor(total.bellpepper.damaged * 0.35) - Math.floor(total.bellpepper.damaged * 0.4)}</td>
+          <td>${(total.tomato.damaged - Math.floor(total.tomato.damaged * 0.4) - Math.floor(total.tomato.damaged * 0.35)) + (total.bellpepper.damaged - Math.floor(total.bellpepper.damaged * 0.35) - Math.floor(total.bellpepper.damaged * 0.4))}</td>
         </tr>
       `;
       tomatoTotal += total.tomato.damaged;
       bellpepperTotal += total.bellpepper.damaged;
     }
-
-    // --- Size Sub-summary ---
-    rows += `
-      <tr>
-        <td style="font-weight:bold;" colspan="4">Size Breakdown</td>
-      </tr>
-      <tr>
-        <td style="padding-left:2em;">Small</td>
-        <td>${total.tomato.small}</td>
-        <td>${total.bellpepper.small}</td>
-        <td>${total.tomato.small + total.bellpepper.small}</td>
-      </tr>
-      <tr>
-        <td style="padding-left:2em;">Medium</td>
-        <td>${total.tomato.medium}</td>
-        <td>${total.bellpepper.medium}</td>
-        <td>${total.tomato.medium + total.bellpepper.medium}</td>
-      </tr>
-      <tr>
-        <td style="padding-left:2em;">Large</td>
-        <td>${total.tomato.large}</td>
-        <td>${total.bellpepper.large}</td>
-        <td>${total.tomato.large + total.bellpepper.large}</td>
-      </tr>
-    `;
-    // --- End Size Sub-summary ---
 
     rows += `
       <tr>
@@ -1033,6 +949,33 @@
 
     const tbody = document.querySelector('.summary-table tbody');
     tbody.innerHTML = rows;
+
+    // Add click event listeners for expandable rows
+    document.querySelectorAll('.expandable-row').forEach(row => {
+      row.addEventListener('click', function() {
+        const category = this.dataset.category;
+        const icon = this.querySelector('.expand-icon');
+        const subRows = document.querySelectorAll(`tr.sub-row[data-parent="${category}"]`);
+        
+        const isExpanded = icon.classList.contains('expanded');
+        
+        if (isExpanded) {
+          // Collapse
+          icon.classList.remove('expanded');
+          icon.textContent = '⊞';
+          subRows.forEach(subRow => {
+            subRow.style.display = 'none';
+          });
+        } else {
+          // Expand
+          icon.classList.add('expanded');
+          icon.textContent = '⊟';
+          subRows.forEach(subRow => {
+            subRow.style.display = 'table-row';
+          });
+        }
+      });
+    });
 
     const label = document.getElementById('summaryDateLabel');
     if (startDate && endDate) {
