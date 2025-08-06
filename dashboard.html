@@ -248,10 +248,16 @@
     .overview-card .status-dot {
       width: 10px;
       height: 10px;
-      background: #2ecc40;
       border-radius: 50%;
       display: inline-block;
       margin-right: 7px;
+      transition: background-color 0.3s ease;
+    }
+    .status-online {
+      background: #2ecc40;
+    }
+    .status-offline {
+      background: #e74c3c;
     }
     .overview-card .overview-value {
       color: #4b8c2a;
@@ -574,8 +580,8 @@
         <span class="icon"><i class="fas fa-cog"></i></span>
         <div>
           <span class="overview-label">System Status</span><br>
-          <span class="status-dot"></span>
-          <span style="color:#2ecc40;font-weight:600;">Online</span>
+          <span class="status-dot" id="systemStatusDot"></span>
+          <span id="systemStatusText" style="font-weight:600;"></span>
         </div>
       </div>
       <div class="overview-card">
@@ -1010,6 +1016,41 @@
 
   // On page load, show latest summary
   renderSummaryTable();
+
+  // System Status Check Function
+  function checkSystemStatus() {
+    const statusDot = document.getElementById('systemStatusDot');
+    const statusText = document.getElementById('systemStatusText');
+    
+    // Try to ping your backend/system endpoint
+    fetch('http://127.0.0.1:5000/system-status', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 5000 // 5 second timeout
+    })
+    .then(response => {
+      if (response.ok) {
+        // System is online
+        statusDot.className = 'status-dot status-online';
+        statusText.style.color = '#2ecc40';
+        statusText.textContent = 'Online';
+      } else {
+        throw new Error('System not responding');
+      }
+    })
+    .catch(error => {
+      // System is offline
+      statusDot.className = 'status-dot status-offline';
+      statusText.style.color = '#e74c3c';
+      statusText.textContent = 'Offline';
+    });
+  }
+
+  // Check system status on page load and every 30 seconds
+  document.addEventListener('DOMContentLoaded', function () {
+    checkSystemStatus();
+    setInterval(checkSystemStatus, 30000); // Check every 30 seconds
+  });
 </script>
 </body>
 </html>

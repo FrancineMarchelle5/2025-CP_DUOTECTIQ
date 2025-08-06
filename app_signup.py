@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -86,6 +87,24 @@ def profile():
         })
     else:
         return jsonify({'success': False, 'message': 'User not found.'}), 404
+
+@app.route('/system-status', methods=['GET'])
+def system_status():
+    try:
+        # Add your system health checks here
+        # For example: check database connection, camera status, etc.
+        
+        # Simple example - you can expand this
+        return jsonify({
+            'status': 'online',
+            'timestamp': datetime.now().isoformat(),
+            'message': 'System is running normally'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
