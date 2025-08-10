@@ -225,6 +225,8 @@
       gap: 32px;
       margin-bottom: 32px;
       flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: stretch;
     }
     .overview-card {
       background: #fff;
@@ -232,50 +234,32 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.10);
       padding: 18px 32px;
       min-width: 220px;
-      flex: 1;
+      flex: 1 1 220px;
       display: flex;
       align-items: center;
       gap: 18px;
       font-size: 1.0rem;
       font-weight: 500;
       position: relative;
+      height: 100px; /* Ensures all cards are the same height */
+      box-sizing: border-box;
     }
     .overview-card .icon {
       font-size: 2.1rem;
-      color: #4b8c2a;
+      color: #23b04a;
       margin-right: 10px;
     }
-    .overview-card .status-dot {
+    .overview-card-link:hover {
+      background: #eafbe2;
+      box-shadow: 0 8px 32px #b2d8b2;
+    }
+    .status-dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
       display: inline-block;
       margin-right: 7px;
-      transition: background-color 0.3s ease;
-    }
-    .status-online {
       background: #2ecc40;
-    }
-    .status-offline {
-      background: #e74c3c;
-    }
-    .overview-card .overview-value {
-      color: #4b8c2a;
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    .overview-card .overview-label {
-      color: #222;
-      font-size: 1.05rem;
-      font-weight: 500;
-      margin-left: 2px;
-    }
-    .overview-card .overview-arrow {
-      color: #4b8c2a;
-      font-size: 1.3rem;
-      margin-right: 4px;
       vertical-align: middle;
     }
 
@@ -530,6 +514,11 @@
   background: #b71c1c !important;
 }
 
+.overview-card-link:hover {
+  background: #eafbe2;
+  box-shadow: 0 8px 32px #b2d8b2;
+  transition: background 0.2s, box-shadow 0.2s;
+}
   </style>
 </head>
 <body>
@@ -601,7 +590,86 @@
           <span class="overview-label">Total crops sorted<br>(Latest)</span>
         </div>
       </div>
+      <div class="overview-card overview-card-link" id="cropQualitiesCard" style="cursor:pointer;">
+        <span class="icon"><i class="fas fa-th-large"></i></span>
+        <div>
+          <span class="overview-label">Crop Qualities Overview</span>
+        </div>
+      </div>
     </div>
+    <div id="cropQualitiesModal"
+      style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); z-index:9999; align-items:center; justify-content:center;">
+      <div
+        style="background:#f8f8f8; border-radius:18px; box-shadow:0 8px 32px #bbb; padding:32px 28px 24px 28px; max-width:820px; width:96vw; margin:auto; position:relative;">
+        <button onclick="document.getElementById('cropQualitiesModal').style.display='none'"
+          style="position:absolute;top:18px;right:18px;background:none;border:none;font-size:1.7rem;color:#888;cursor:pointer;">&times;</button>
+        <h2
+          style="color:#4b8c2a; font-size:1.5rem; margin-top:0; margin-bottom:18px; border-bottom:2px solid #bbb; padding-bottom:8px;">
+          Crop Qualities Overview</h2>
+        <div style="font-size:1.08rem; margin-bottom:18px;">
+          Tomatoes and bell peppers are perishable crops that require careful handling to maintain quality. Key qualities
+          considered during sorting include:<br>
+          <b>• Condition</b> – Detecting visible damage such as bruises, blemishes, and discoloration.<br>
+          <b>• Color</b> – Classifying undamaged crops as green or red to meet buyer packaging and pricing requirements.<br>
+          <b>• Size</b> – Categorizing undamaged crops into small, medium, or large for consistent presentation and market
+          standards.
+        </div>
+        <h2
+          style="color:#4b8c2a; font-size:1.2rem; margin-top:0; margin-bottom:10px; border-bottom:2px solid #bbb; padding-bottom:6px;">
+          Importance of Sorting</h2>
+        <div style="font-size:1.05rem; margin-bottom:18px;">
+          Proper sorting ensures high-quality produce reaches the market, reducing post-harvest losses and payment
+          deductions due to damaged or misclassified crops. Sorting by damage, color, and size:<br>
+          <ul style="margin:8px 0 0 20px; padding:0;">
+            <li>Improves buyer confidence and reduces rejected batches.</li>
+            <li>Helps vendors price accurately by avoiding mixed sizes or colors in the same batch.</li>
+            <li>Supports faster operations, minimizing labor and time spent on manual inspection.</li>
+            <li>Prevents loss of income by removing damaged produce before packaging.</li>
+          </ul>
+          </div>
+          <h2
+            style="color:#4b8c2a; font-size:1.2rem; margin-top:0; margin-bottom:10px; border-bottom:2px solid #bbb; padding-bottom:6px;">
+            Crop Type</h2>
+          <div style="display:flex; gap:24px; flex-wrap:wrap; justify-content:center;">
+            <div
+              style="background:#fff; border-radius:14px; box-shadow:0 2px 8px #e0e0e0; padding:18px 16px; min-width:260px; flex:1;">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <img src="Pictures/tomato_sample.png" alt="Tomato" style="height:60px; border-radius:8px;">
+                <div>
+                  <b>Tomato (Green/Red)</b>
+                  <div style="font-size:0.98rem; margin-top:4px;">
+                    <span style="color:#4b8c2a;">Green</span> &nbsp; <span style="color:#d11a1a;">Red</span><br>
+                    Small, Medium, Large
+                  </div>
+                </div>
+              </div>
+              <div style="font-size:0.95rem; margin-top:10px;">
+                A tomato is the fleshy, seed-bearing fruit of Solanum lycopersicum, treated like a vegetable in everyday cooking
+                and available in various colors including green and red. Tomatoes are versatile and commonly used raw or cooked in
+                dishes like salads, sauces, and soups.
+              </div>
+            </div>
+            <div
+              style="background:#fff; border-radius:14px; box-shadow:0 2px 8px #e0e0e0; padding:18px 16px; min-width:260px; flex:1;">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <img src="Pictures/bellpepper_sample.png" alt="Bell Pepper" style="height:60px; border-radius:8px;">
+                <div>
+                  <b>Bell Pepper (Green/Red)</b>
+                  <div style="font-size:0.98rem; margin-top:4px;">
+                    <span style="color:#4b8c2a;">Green</span> &nbsp; <span style="color:#d11a1a;">Red</span><br>
+                    Small, Medium, Large
+                  </div>
+                  </div>
+                  </div>
+                  <div style="font-size:0.95rem; margin-top:10px;">
+                    A bell pepper is the fruit of Capsicum annuum, known for its crisp, mild, and sweet flavor. It is widely used as a
+                    culinary vegetable and is available in colors like green (immature) and red (fully ripe), adding vibrant color and
+                    nutrition to dishes.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
     <div class="sorting-summary-row">
       <span class="sorting-summary-title">Sorting Summary</span>
     </div>
@@ -1073,6 +1141,15 @@
   // Check system status immediately and then every 30 seconds
   checkSystemStatus();
   setInterval(checkSystemStatus, 30000); // Check every 30 seconds
+
+  // Show Crop Qualities Overview modal on card click
+document.getElementById('cropQualitiesCard').onclick = function() {
+  document.getElementById('cropQualitiesModal').style.display = 'flex';
+};
+// Hide modal when clicking outside the modal content
+document.getElementById('cropQualitiesModal').onclick = function(e) {
+  if (e.target === this) this.style.display = 'none';
+};
 </script>
 </body>
 </html>
