@@ -87,6 +87,25 @@ def profile():
         })
     else:
         return jsonify({'success': False, 'message': 'User not found.'}), 404
+    
+@app.route('/save_sorting', methods=['POST'])
+def save_sorting():
+    data = request.json
+    conn = sqlite3.connect('duotectdb.sqlite3')
+    c = conn.cursor()
+    c.execute('''
+        INSERT INTO tbl_sorting (crop_type, condition, color, sorted_to, size)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (
+        data.get('crop_type'),
+        data.get('condition'),
+        data.get('color'),
+        data.get('sorted_to'),
+        data.get('size')
+    ))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True, 'message': 'Sorting result saved.'})
 
 @app.route('/system-status', methods=['GET'])
 def system_status():
