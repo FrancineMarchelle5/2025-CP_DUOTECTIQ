@@ -651,26 +651,76 @@
         <span class="role" id="headerProfileRole"></span>
       </div>
       <span class="profile-arrow"><i class="fas fa-chevron-down"></i></span>
-      <!-- Profile Popup -->
-      <div id="profilePopup" style="display:none; position:absolute; top:54px; right:0; z-index:999; background:#f8f8f8; border-radius:24px; box-shadow:0 4px 24px #bbb; padding:24px 32px 18px 32px; min-width:320px; max-width:95vw;">
-        <div style="font-size:1.3rem;font-weight:700;margin-bottom:10px;">My Profile</div>
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-          <span style="display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:#eee;border:2px solid #4b8c2a;">
-            <i class="fas fa-user" style="font-size:2rem;color:#4b8c2a;"></i>
+      
+     <!-- Profile Popup -->
+    <div id="profilePopup" style="display:none; position:absolute; top:54px; right:0; z-index:999; background:#fff; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.15); padding:0; min-width:320px; max-width:95vw; border:1px solid #e8e8e8; overflow:hidden;">
+      
+      <!-- Header Section -->
+      <div style="background:linear-gradient(135deg, #4b8c2a 0%, #3a6d20 100%); padding:18px 20px; color:#fff;">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <span style="display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:#fff;border:3px solid rgba(255,255,255,0.3);">
+            <i class="fas fa-user" style="font-size:1.5rem;color:#4b8c2a;"></i>
           </span>
           <div>
-            <div style="font-weight:600;font-size:1.1rem;" id="popupProfileName"></div>
-            <div style="font-size:1rem;color:#888;" id="popupProfileRole"></div>
+            <div style="font-weight:700;font-size:1.0rem;margin-bottom:3px;" id="popupProfileName"></div>
+            <div style="font-size:0.8rem;opacity:0.9;background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:10px;display:inline-block;" id="popupProfileRole"></div>
           </div>
         </div>
-        <hr style="margin:12px 0 14px 0;border:0;border-top:1.5px solid #ccc;">
-        <div style="font-weight:600;font-size:1.08rem;margin-bottom:8px;">Personal Information</div>
-        <div style="margin-bottom:6px;"><b>Name:</b> &nbsp; <span id="popupProfileFullName"></span></div>
-        <div style="margin-bottom:6px;"><b>Mobile Number:</b> &nbsp; <span id="popupProfileMobile"></span></div>
-        <div><b>Address:</b> &nbsp; <span id="popupProfileAddress"></span></div>
+      </div>
+
+      <!-- Content Section -->
+      <div style="padding:20px;">
+        <div style="margin-bottom:16px;">
+          <h4 style="color:#2d3a22;font-size:0.95rem;font-weight:700;margin:0 0 12px 0;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-user-circle" style="color:#4b8c2a;font-size:0.85rem;"></i>
+            Personal Information
+          </h4>
+          
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:flex-start;padding:10px;background:#f8fff4;border-radius:6px;border-left:3px solid #4b8c2a;">
+              <div style="display:flex;align-items:center;gap:8px;width:100%;">
+                <i class="fas fa-id-card" style="color:#4b8c2a;font-size:0.75rem;width:16px;"></i>
+                <div style="flex:1;">
+                  <div style="font-size:0.7rem;color:#666;font-weight:500;margin-bottom:1px;">Full Name</div>
+                  <div style="font-weight:600;color:#333;font-size:0.8rem;" id="popupProfileFullName"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:flex-start;padding:10px;background:#f8fff4;border-radius:6px;border-left:3px solid #4b8c2a;">
+              <div style="display:flex;align-items:center;gap:8px;width:100%;">
+                <i class="fas fa-phone" style="color:#4b8c2a;font-size:0.75rem;width:16px;"></i>
+                <div style="flex:1;">
+                  <div style="font-size:0.7rem;color:#666;font-weight:500;margin-bottom:1px;">Mobile Number</div>
+                  <div style="font-weight:600;color:#333;font-size:0.8rem;" id="popupProfileMobile"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:flex-start;padding:10px;background:#f8fff4;border-radius:6px;border-left:3px solid #4b8c2a;">
+              <div style="display:flex;align-items:flex-start;gap:8px;width:100%;">
+                <i class="fas fa-map-marker-alt" style="color:#4b8c2a;font-size:0.75rem;width:16px;margin-top:1px;"></i>
+                <div style="flex:1;">
+                  <div style="font-size:0.7rem;color:#666;font-weight:500;margin-bottom:1px;">Address</div>
+                  <div style="font-weight:600;color:#333;font-size:0.8rem;line-height:1.3;" id="popupProfileAddress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align:center;padding-top:12px;border-top:1px solid #f0f0f0;">
+          <div style="color:#888;font-size:0.65rem;">
+            <i class="fas fa-shield-alt" style="margin-right:4px;color:#4b8c2a;"></i>
+            Your information is secure and private
+          </div>
+        </div>
       </div>
     </div>
   </div>
+</div>
+
   <div class="dashboard-main">
     <div class="dashboard-sidebar" id="dashboardSidebar">
       <div class="sidebar-top">
@@ -747,39 +797,39 @@
 </div>
   <script>
     // Profile fetch and fill
-    document.addEventListener('DOMContentLoaded', function () {
-      const userMobile = localStorage.getItem('mobile_number');
-      if (userMobile) {
-        fetch('http://127.0.0.1:5000/profile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mobile_number: userMobile })
-        })
-        .then(res => res.json())
-        .then(result => {
-          if (result.success && result.profile) {
-            const profile = result.profile;
-            const fullName = [profile.first_name, profile.middle_name, profile.last_name].filter(Boolean).join(' ');
-            const address = [profile.baranggay, profile.street, profile.city, profile.zip_code].filter(Boolean).join(', ');
-            document.getElementById('popupProfileName').textContent = fullName;
-            document.getElementById('popupProfileRole').textContent = profile.role;
-            document.getElementById('popupProfileFullName').textContent = fullName;
-            document.getElementById('popupProfileMobile').textContent = profile.mobile_number;
-            document.getElementById('popupProfileAddress').textContent = address;
-            document.getElementById('headerProfileName').textContent = fullName;
-            document.getElementById('headerProfileRole').textContent = profile.role;
-          } else {
-            alert('Profile data not found. Please check your backend and database.');
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert('Could not fetch profile info. Backend may not be running.');
-        });
-      } else {
-        alert('User is not logged in. Mobile number not found in localStorage.');
-      }
-    });
+  document.addEventListener('DOMContentLoaded', function () {
+    const userMobile = localStorage.getItem('mobile_number');
+    if (userMobile) {
+      fetch('http://127.0.0.1:5000/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile_number: userMobile })
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success && result.profile) {
+          const profile = result.profile;
+          const fullName = [profile.first_name, profile.middle_name, profile.last_name].filter(Boolean).join(' ');
+          const address = [profile.street, profile.baranggay, profile.city, profile.zip_code].filter(Boolean).join(', ');
+          document.getElementById('popupProfileName').textContent = fullName;
+          document.getElementById('popupProfileRole').textContent = profile.role;
+          document.getElementById('popupProfileFullName').textContent = fullName;
+          document.getElementById('popupProfileMobile').textContent = profile.mobile_number;
+          document.getElementById('popupProfileAddress').textContent = address;
+          document.getElementById('headerProfileName').textContent = fullName;
+          document.getElementById('headerProfileRole').textContent = profile.role;
+        } else {
+          alert('Profile data not found. Please check your backend and database.');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Could not fetch profile info. Backend may not be running.');
+      });
+    } else {
+      alert('User is not logged in. Mobile number not found in localStorage.');
+    }
+  });
 
     // Profile popup logic
     const profileBox = document.querySelector('.profile-box');
