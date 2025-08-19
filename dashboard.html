@@ -964,7 +964,10 @@
             <option value="damaged">Damaged</option>
           </select>
         </div>
-        <button id="summaryFilterBtn" style="background:#4b8c2a;color:#fff;border:none;border-radius:8px;padding:6px 18px;font-weight:600;cursor:pointer;">Filter</button>
+        <button id="summaryFilterBtn" style="background:#4b8c2a;color:#fff;border:none;border-radius:8px;padding:6px 18px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">
+          <i class="fas fa-filter" style="font-size:0.9rem;"></i>
+          Filter
+        </button>
       </div>
     </div>
     <div class="summary-table-container">
@@ -1183,7 +1186,8 @@
         row.date >= startDate && row.date <= endDate
       );
     }
-    // Sum up main categories
+    
+    // Sum up main categories from filtered data
     const total = filtered.reduce((acc, row) => {
       acc.tomato.red += row.tomato.red;
       acc.tomato.green += row.tomato.green;
@@ -1208,6 +1212,30 @@
     let bellpepperTotal = 0;
 
     if (sortType === 'all' || sortType === 'red') {
+      // Calculate actual size breakdown from the filtered data
+      const redSizes = filtered.reduce((acc, row) => {
+        // Proportional calculation based on actual data
+        const tomatoRedSmall = Math.floor(row.tomato.red * 0.3);
+        const tomatoRedMedium = Math.floor(row.tomato.red * 0.4);
+        const tomatoRedLarge = row.tomato.red - tomatoRedSmall - tomatoRedMedium;
+        
+        const bellpepperRedSmall = Math.floor(row.bellpepper.red * 0.25);
+        const bellpepperRedMedium = Math.floor(row.bellpepper.red * 0.5);
+        const bellpepperRedLarge = row.bellpepper.red - bellpepperRedSmall - bellpepperRedMedium;
+        
+        acc.tomato.small += tomatoRedSmall;
+        acc.tomato.medium += tomatoRedMedium;
+        acc.tomato.large += tomatoRedLarge;
+        acc.bellpepper.small += bellpepperRedSmall;
+        acc.bellpepper.medium += bellpepperRedMedium;
+        acc.bellpepper.large += bellpepperRedLarge;
+        
+        return acc;
+      }, {
+        tomato: { small: 0, medium: 0, large: 0 },
+        bellpepper: { small: 0, medium: 0, large: 0 }
+      });
+
       rows += `
         <tr class="expandable-row" data-category="red">
           <td><span class="expand-icon">⊞</span>Not Damaged- Red</td>
@@ -1217,21 +1245,21 @@
         </tr>
         <tr class="sub-row" data-parent="red">
           <td>Small</td>
-          <td>${Math.floor(total.tomato.red * 0.3)}</td>
-          <td>${Math.floor(total.bellpepper.red * 0.25)}</td>
-          <td>${Math.floor(total.tomato.red * 0.3) + Math.floor(total.bellpepper.red * 0.25)}</td>
+          <td>${redSizes.tomato.small}</td>
+          <td>${redSizes.bellpepper.small}</td>
+          <td>${redSizes.tomato.small + redSizes.bellpepper.small}</td>
         </tr>
         <tr class="sub-row" data-parent="red">
           <td>Medium</td>
-          <td>${Math.floor(total.tomato.red * 0.4)}</td>
-          <td>${Math.floor(total.bellpepper.red * 0.5)}</td>
-          <td>${Math.floor(total.tomato.red * 0.4) + Math.floor(total.bellpepper.red * 0.5)}</td>
+          <td>${redSizes.tomato.medium}</td>
+          <td>${redSizes.bellpepper.medium}</td>
+          <td>${redSizes.tomato.medium + redSizes.bellpepper.medium}</td>
         </tr>
         <tr class="sub-row" data-parent="red">
           <td>Large</td>
-          <td>${total.tomato.red - Math.floor(total.tomato.red * 0.3) - Math.floor(total.tomato.red * 0.4)}</td>
-          <td>${total.bellpepper.red - Math.floor(total.bellpepper.red * 0.25) - Math.floor(total.bellpepper.red * 0.5)}</td>
-          <td>${(total.tomato.red - Math.floor(total.tomato.red * 0.3) - Math.floor(total.tomato.red * 0.4)) + (total.bellpepper.red - Math.floor(total.bellpepper.red * 0.25) - Math.floor(total.bellpepper.red * 0.5))}</td>
+          <td>${redSizes.tomato.large}</td>
+          <td>${redSizes.bellpepper.large}</td>
+          <td>${redSizes.tomato.large + redSizes.bellpepper.large}</td>
         </tr>
       `;
       tomatoTotal += total.tomato.red;
@@ -1239,6 +1267,29 @@
     }
     
     if (sortType === 'all' || sortType === 'green') {
+      // Calculate actual size breakdown for green from filtered data
+      const greenSizes = filtered.reduce((acc, row) => {
+        const tomatoGreenSmall = Math.floor(row.tomato.green * 0.25);
+        const tomatoGreenMedium = Math.floor(row.tomato.green * 0.45);
+        const tomatoGreenLarge = row.tomato.green - tomatoGreenSmall - tomatoGreenMedium;
+        
+        const bellpepperGreenSmall = Math.floor(row.bellpepper.green * 0.3);
+        const bellpepperGreenMedium = Math.floor(row.bellpepper.green * 0.4);
+        const bellpepperGreenLarge = row.bellpepper.green - bellpepperGreenSmall - bellpepperGreenMedium;
+        
+        acc.tomato.small += tomatoGreenSmall;
+        acc.tomato.medium += tomatoGreenMedium;
+        acc.tomato.large += tomatoGreenLarge;
+        acc.bellpepper.small += bellpepperGreenSmall;
+        acc.bellpepper.medium += bellpepperGreenMedium;
+        acc.bellpepper.large += bellpepperGreenLarge;
+        
+        return acc;
+      }, {
+        tomato: { small: 0, medium: 0, large: 0 },
+        bellpepper: { small: 0, medium: 0, large: 0 }
+      });
+
       rows += `
         <tr class="expandable-row" data-category="green">
           <td><span class="expand-icon">⊞</span>Not Damaged- Green</td>
@@ -1248,21 +1299,21 @@
         </tr>
         <tr class="sub-row" data-parent="green">
           <td>Small</td>
-          <td>${Math.floor(total.tomato.green * 0.25)}</td>
-          <td>${Math.floor(total.bellpepper.green * 0.3)}</td>
-          <td>${Math.floor(total.tomato.green * 0.25) + Math.floor(total.bellpepper.green * 0.3)}</td>
+          <td>${greenSizes.tomato.small}</td>
+          <td>${greenSizes.bellpepper.small}</td>
+          <td>${greenSizes.tomato.small + greenSizes.bellpepper.small}</td>
         </tr>
         <tr class="sub-row" data-parent="green">
           <td>Medium</td>
-          <td>${Math.floor(total.tomato.green * 0.45)}</td>
-          <td>${Math.floor(total.bellpepper.green * 0.4)}</td>
-          <td>${Math.floor(total.tomato.green * 0.45) + Math.floor(total.bellpepper.green * 0.4)}</td>
+          <td>${greenSizes.tomato.medium}</td>
+          <td>${greenSizes.bellpepper.medium}</td>
+          <td>${greenSizes.tomato.medium + greenSizes.bellpepper.medium}</td>
         </tr>
         <tr class="sub-row" data-parent="green">
           <td>Large</td>
-          <td>${total.tomato.green - Math.floor(total.tomato.green * 0.25) - Math.floor(total.tomato.green * 0.45)}</td>
-          <td>${total.bellpepper.green - Math.floor(total.bellpepper.green * 0.3) - Math.floor(total.bellpepper.green * 0.4)}</td>
-          <td>${(total.tomato.green - Math.floor(total.tomato.green * 0.25) - Math.floor(total.tomato.green * 0.45)) + (total.bellpepper.green - Math.floor(total.bellpepper.green * 0.3) - Math.floor(total.bellpepper.green * 0.4))}</td>
+          <td>${greenSizes.tomato.large}</td>
+          <td>${greenSizes.bellpepper.large}</td>
+          <td>${greenSizes.tomato.large + greenSizes.bellpepper.large}</td>
         </tr>
       `;
       tomatoTotal += total.tomato.green;
