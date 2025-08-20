@@ -529,20 +529,23 @@
     .sorting-baskets-btns .damaged { background: #e0b04b; color: #fff; box-shadow: 0 4px 12px #ffe0b2; }
     .sorting-baskets-btns .red { background: #d11a1a; color: #fff; box-shadow: 0 4px 12px #ffb2b2; }
 
-    #activityLogTable tbody tr:nth-child(even) {
+    #sortingHistoryTable tbody tr:nth-child(even) {
   background: #f8fff4;
 }
-#activityLogTable tbody tr:nth-child(odd) {
+#sortingHistoryTable tbody tr:nth-child(odd) {
   background: #fff;
 }
-#activityLogTable td {
+#sortingHistoryTable td {
   border: none !important;
   color: #2d3a22;
   font-weight: 500;
-  padding: 12px 8px;
+  padding: 6px 6px;
+  font-size: 0.90rem;
 }
-#activityLogTable th {
+#sortingHistoryTable th {
   border: none !important;
+  font-size: 0.90rem;
+  padding: 6px 6px;
 }
 
 #cancelLogoutBtn:hover {
@@ -727,7 +730,7 @@
     <div class="sidebar-menu">
       <a href="dashboard.html" class="active"><span class="icon"><i class="fas fa-home"></i></span><span>Dashboard</span></a>
       <a href="sorting.html"><span class="icon"><i class="fas fa-seedling"></i></span><span>Sorting</span></a>
-      <a href="activity.html"><span class="icon"><i class="fas fa-list"></i></span><span>Activity Log</span></a>
+      <a href="history.html"><span class="icon"><i class="fas fa-list"></i></span><span>Sorting History</span></a>
       <a href="#" id="logoutMenu"><span class="icon"><i class="fas fa-sign-out-alt"></i></span><span>Logout</span></a>
     </div>
   </div>
