@@ -554,6 +554,82 @@
   background: #b71c1c !important;
 }
 
+/* Empty state styling */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  color: #ddd;
+  margin-bottom: 16px;
+}
+
+.empty-state-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.empty-state-message {
+  font-size: 0.9rem;
+  color: #888;
+  line-height: 1.4;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4b8c2a;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #e74c3c;
+}
+
+.error-state-icon {
+  font-size: 3rem;
+  color: #e74c3c;
+  margin-bottom: 16px;
+}
+
+.retry-btn {
+  background: #4b8c2a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background 0.2s;
+}
+
+.retry-btn:hover {
+  background: #3a6d20;
+}
+
   </style>
 </head>
 <body>
@@ -670,7 +746,7 @@
       <div class="overview-card">
         <span class="icon"><i class="fas fa-arrow-up"></i></span>
         <div>
-          <span class="overview-value">204</span>
+          <span class="overview-value">0</span>
           <span class="overview-label">Total crops sorted<br>(Latest)</span>
         </div>
       </div>
@@ -982,51 +1058,7 @@
         </thead>
         <tbody>
           <tr>
-            <td>Not Damaged Red</td>
-            <td>15</td>
-            <td>12</td>
-            <td>27</td>
-          </tr>
-          <tr>
-            <td>Not Damaged Green</td>
-            <td>20</td>
-            <td>14</td>
-            <td>34</td>
-          </tr>
-          <tr>
-            <td>Damaged</td>
-            <td>9</td>
-            <td>8</td>
-            <td>17</td>
-          </tr>
-          <!-- Sub-summary for Size -->
-          <tr>
-            <td style="font-weight:bold;" colspan="4">Size Breakdown</td>
-          </tr>
-          <tr>
-            <td style="padding-left:2em;">Small</td>
-            <td>12</td>
-            <td>5</td>
-            <td>17</td>
-          </tr>
-          <tr>
-            <td style="padding-left:2em;">Medium</td>
-            <td>10</td>
-            <td>15</td>
-            <td>25</td>
-          </tr>
-          <tr>
-            <td style="padding-left:2em;">Large</td>
-            <td>13</td>
-            <td>6</td>
-            <td>19</td>
-          </tr>
-          <!-- End sub-summary -->
-          <tr>
-            <td style="font-weight:bold;">Total Pieces</td>
-            <td>44</td>
-            <td>34</td>
-            <td>78</td>
+            <td colspan="4" style="text-align:center;padding:20px;color:#666;">Loading...</td>
           </tr>
         </tbody>
       </table>
@@ -1072,15 +1104,14 @@
           document.getElementById('headerProfileName').textContent = fullName;
           document.getElementById('headerProfileRole').textContent = profile.role;
         } else {
-          alert('Profile data not found. Please check your backend and database.');
+          console.log('Profile data not found.');
         }
       })
       .catch(err => {
-        console.error(err);
-        alert('Could not fetch profile info. Backend may not be running.');
+        console.error('Could not fetch profile info:', err);
       });
     } else {
-      alert('User is not logged in. Mobile number not found in localStorage.');
+      console.log('User is not logged in.');
     }
   });
 
@@ -1135,272 +1166,474 @@
     }
   });
 
-  // Summary Table Logic
-  const summaryData = [
-  {
-    date: '2025-07-01',
-    tomato: { red: 5, green: 8, damaged: 2, small: 2, medium: 6, large: 7 },
-    bellpepper: { red: 3, green: 4, damaged: 1, small: 1, medium: 4, large: 3 }
-  },
-  {
-    date: '2025-07-02',
-    tomato: { red: 7, green: 6, damaged: 3, small: 3, medium: 5, large: 8 },
-    bellpepper: { red: 2, green: 5, damaged: 2, small: 2, medium: 3, large: 2 }
-  },
-  {
-    date: '2025-07-03',
-    tomato: { red: 6, green: 7, damaged: 1, small: 1, medium: 7, large: 5 },
-    bellpepper: { red: 4, green: 3, damaged: 2, small: 1, medium: 2, large: 4 }
-  },
-  {
-    date: '2025-07-04',
-    tomato: { red: 8, green: 5, damaged: 2, small: 2, medium: 6, large: 7 },
-    bellpepper: { red: 3, green: 6, damaged: 1, small: 2, medium: 5, large: 2 }
-  },
-  {
-    date: '2025-07-05',
-    tomato: { red: 9, green: 6, damaged: 2, small: 4, medium: 6, large: 7 },
-    bellpepper: { red: 5, green: 2, damaged: 3, small: 2, medium: 2, large: 3 }
-  },
-  {
-    date: '2025-07-06',
-    tomato: { red: 4, green: 8, damaged: 3, small: 2, medium: 5, large: 8 },
-    bellpepper: { red: 6, green: 4, damaged: 2, small: 1, medium: 4, large: 5 }
-  },
-  {
-    date: '2025-07-07',
-    tomato: { red: 7, green: 7, damaged: 2, small: 3, medium: 6, large: 7 },
-    bellpepper: { red: 2, green: 5, damaged: 1, small: 2, medium: 3, large: 2 }
-  },
-  {
-    date: '2025-07-08',
-    tomato: { red: 8, green: 9, damaged: 1, small: 2, medium: 7, large: 6 },
-    bellpepper: { red: 3, green: 7, damaged: 2, small: 2, medium: 5, large: 3 }
-  }
-];
-
+  // Summary Table Logic - Fetch from backend with improved UI states
   function renderSummaryTable(startDate, endDate, sortType = 'all') {
-    let filtered = summaryData;
-    if (startDate && endDate) {
-      filtered = summaryData.filter(row =>
-        row.date >= startDate && row.date <= endDate
-      );
-    }
+    // Show loading state
+    showLoadingState();
     
-    // Sum up main categories from filtered data
-    const total = filtered.reduce((acc, row) => {
-      acc.tomato.red += row.tomato.red;
-      acc.tomato.green += row.tomato.green;
-      acc.tomato.damaged += row.tomato.damaged;
-      acc.tomato.small += row.tomato.small || 0;
-      acc.tomato.medium += row.tomato.medium || 0;
-      acc.tomato.large += row.tomato.large || 0;
-      acc.bellpepper.red += row.bellpepper.red;
-      acc.bellpepper.green += row.bellpepper.green;
-      acc.bellpepper.damaged += row.bellpepper.damaged;
-      acc.bellpepper.small += row.bellpepper.small || 0;
-      acc.bellpepper.medium += row.bellpepper.medium || 0;
-      acc.bellpepper.large += row.bellpepper.large || 0;
-      return acc;
-    }, {
-      tomato: { red: 0, green: 0, damaged: 0, small: 0, medium: 0, large: 0 },
-      bellpepper: { red: 0, green: 0, damaged: 0, small: 0, medium: 0, large: 0 }
+    const requestData = {
+      start_date: startDate,
+      end_date: endDate,
+      sort_type: sortType
+    };
+
+    fetch('http://127.0.0.1:5000/sorting-summary', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestData)
+    })
+    .then(res => res.json())
+    .then(result => {
+      if (result.success && result.data) {
+        const data = result.data;
+        
+        // Check if all data is zero/empty
+        const hasData = checkIfDataExists(data, sortType);
+        
+        if (!hasData) {
+          showEmptyState(startDate, endDate, sortType);
+          return;
+        }
+        
+        let rows = '';
+        let tomatoTotal = 0;
+        let bellpepperTotal = 0;
+
+        if (sortType === 'all' || sortType === 'red') {
+          rows += `
+            <tr class="expandable-row" data-category="red">
+              <td><span class="expand-icon">⊞</span>Not Damaged- Red</td>
+              <td>${data.tomato.red || 0}</td>
+              <td>${data.bellpepper.red || 0}</td>
+              <td>${(data.tomato.red || 0) + (data.bellpepper.red || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="red">
+              <td>Small</td>
+              <td>${data.tomato.red_small || 0}</td>
+              <td>${data.bellpepper.red_small || 0}</td>
+              <td>${(data.tomato.red_small || 0) + (data.bellpepper.red_small || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="red">
+              <td>Medium</td>
+              <td>${data.tomato.red_medium || 0}</td>
+              <td>${data.bellpepper.red_medium || 0}</td>
+              <td>${(data.tomato.red_medium || 0) + (data.bellpepper.red_medium || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="red">
+              <td>Large</td>
+              <td>${data.tomato.red_large || 0}</td>
+              <td>${data.bellpepper.red_large || 0}</td>
+              <td>${(data.tomato.red_large || 0) + (data.bellpepper.red_large || 0)}</td>
+            </tr>
+          `;
+          tomatoTotal += data.tomato.red || 0;
+          bellpepperTotal += data.bellpepper.red || 0;
+        }
+        
+        if (sortType === 'all' || sortType === 'green') {
+          rows += `
+            <tr class="expandable-row" data-category="green">
+              <td><span class="expand-icon">⊞</span>Not Damaged- Green</td>
+              <td>${data.tomato.green || 0}</td>
+              <td>${data.bellpepper.green || 0}</td>
+              <td>${(data.tomato.green || 0) + (data.bellpepper.green || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="green">
+              <td>Small</td>
+              <td>${data.tomato.green_small || 0}</td>
+              <td>${data.bellpepper.green_small || 0}</td>
+              <td>${(data.tomato.green_small || 0) + (data.bellpepper.green_small || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="green">
+              <td>Medium</td>
+              <td>${data.tomato.green_medium || 0}</td>
+              <td>${data.bellpepper.green_medium || 0}</td>
+              <td>${(data.tomato.green_medium || 0) + (data.bellpepper.green_medium || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="green">
+              <td>Large</td>
+              <td>${data.tomato.green_large || 0}</td>
+              <td>${data.bellpepper.green_large || 0}</td>
+              <td>${(data.tomato.green_large || 0) + (data.bellpepper.green_large || 0)}</td>
+            </tr>
+          `;
+          tomatoTotal += data.tomato.green || 0;
+          bellpepperTotal += data.bellpepper.green || 0;
+        }
+        
+        if (sortType === 'all' || sortType === 'damaged') {
+          rows += `
+            <tr>
+              <td>Damaged</td>
+              <td>${data.tomato.damaged || 0}</td>
+              <td>${data.bellpepper.damaged || 0}</td>
+              <td>${(data.tomato.damaged || 0) + (data.bellpepper.damaged || 0)}</td>
+            </tr>
+          `;
+          tomatoTotal += data.tomato.damaged || 0;
+          bellpepperTotal += data.bellpepper.damaged || 0;
+        }
+
+        rows += `
+          <tr>
+            <td style="font-weight:bold;">Total Pieces</td>
+            <td>${tomatoTotal}</td>
+            <td>${bellpepperTotal}</td>
+            <td>${tomatoTotal + bellpepperTotal}</td>
+          </tr>
+        `;
+
+        const tbody = document.querySelector('.summary-table tbody');
+        tbody.innerHTML = rows;
+
+        // Add click event listeners for expandable rows
+        document.querySelectorAll('.expandable-row').forEach(row => {
+          row.addEventListener('click', function() {
+            const category = this.dataset.category;
+            const icon = this.querySelector('.expand-icon');
+            const subRows = document.querySelectorAll(`tr.sub-row[data-parent="${category}"]`);
+            
+            const isExpanded = icon.classList.contains('expanded');
+            
+            if (isExpanded) {
+              icon.classList.remove('expanded');
+              icon.textContent = '⊞';
+              subRows.forEach(subRow => {
+                subRow.style.display = 'none';
+              });
+            } else {
+              icon.classList.add('expanded');
+              icon.textContent = '⊟';
+              subRows.forEach(subRow => {
+                subRow.style.display = 'table-row';
+              });
+            }
+          });
+        });
+
+        // Update label
+        const label = document.getElementById('summaryDateLabel');
+        if (startDate && endDate) {
+          label.textContent = `Summary: ${startDate} to ${endDate}`;
+        } else {
+          label.textContent = `Latest Summary`;
+        }
+
+        // Update total crops sorted in overview
+        const totalCrops = tomatoTotal + bellpepperTotal;
+        document.querySelector('.overview-value').textContent = totalCrops;
+        
+      } else {
+        console.log('No summary data found');
+        showEmptyState(startDate, endDate, sortType);
+      }
+    })
+    .catch(err => {
+      console.error('Could not fetch summary data:', err);
+      showErrorState();
     });
+  }
 
-    let rows = '';
-    let tomatoTotal = 0;
-    let bellpepperTotal = 0;
-
-    if (sortType === 'all' || sortType === 'red') {
-      // Calculate actual size breakdown from the filtered data
-      const redSizes = filtered.reduce((acc, row) => {
-        // Proportional calculation based on actual data
-        const tomatoRedSmall = Math.floor(row.tomato.red * 0.3);
-        const tomatoRedMedium = Math.floor(row.tomato.red * 0.4);
-        const tomatoRedLarge = row.tomato.red - tomatoRedSmall - tomatoRedMedium;
-        
-        const bellpepperRedSmall = Math.floor(row.bellpepper.red * 0.25);
-        const bellpepperRedMedium = Math.floor(row.bellpepper.red * 0.5);
-        const bellpepperRedLarge = row.bellpepper.red - bellpepperRedSmall - bellpepperRedMedium;
-        
-        acc.tomato.small += tomatoRedSmall;
-        acc.tomato.medium += tomatoRedMedium;
-        acc.tomato.large += tomatoRedLarge;
-        acc.bellpepper.small += bellpepperRedSmall;
-        acc.bellpepper.medium += bellpepperRedMedium;
-        acc.bellpepper.large += bellpepperRedLarge;
-        
-        return acc;
-      }, {
-        tomato: { small: 0, medium: 0, large: 0 },
-        bellpepper: { small: 0, medium: 0, large: 0 }
-      });
-
-      rows += `
-        <tr class="expandable-row" data-category="red">
-          <td><span class="expand-icon">⊞</span>Not Damaged- Red</td>
-          <td>${total.tomato.red}</td>
-          <td>${total.bellpepper.red}</td>
-          <td>${total.tomato.red + total.bellpepper.red}</td>
-        </tr>
-        <tr class="sub-row" data-parent="red">
-          <td>Small</td>
-          <td>${redSizes.tomato.small}</td>
-          <td>${redSizes.bellpepper.small}</td>
-          <td>${redSizes.tomato.small + redSizes.bellpepper.small}</td>
-        </tr>
-        <tr class="sub-row" data-parent="red">
-          <td>Medium</td>
-          <td>${redSizes.tomato.medium}</td>
-          <td>${redSizes.bellpepper.medium}</td>
-          <td>${redSizes.tomato.medium + redSizes.bellpepper.medium}</td>
-        </tr>
-        <tr class="sub-row" data-parent="red">
-          <td>Large</td>
-          <td>${redSizes.tomato.large}</td>
-          <td>${redSizes.bellpepper.large}</td>
-          <td>${redSizes.tomato.large + redSizes.bellpepper.large}</td>
-        </tr>
-      `;
-      tomatoTotal += total.tomato.red;
-      bellpepperTotal += total.bellpepper.red;
+  // Helper function to check if data exists
+  function checkIfDataExists(data, sortType) {
+    let totalCount = 0;
+    
+    if (sortType === 'all') {
+      totalCount = (data.tomato.red || 0) + (data.tomato.green || 0) + (data.tomato.damaged || 0) +
+                  (data.bellpepper.red || 0) + (data.bellpepper.green || 0) + (data.bellpepper.damaged || 0);
+    } else if (sortType === 'red') {
+      totalCount = (data.tomato.red || 0) + (data.bellpepper.red || 0);
+    } else if (sortType === 'green') {
+      totalCount = (data.tomato.green || 0) + (data.bellpepper.green || 0);
+    } else if (sortType === 'damaged') {
+      totalCount = (data.tomato.damaged || 0) + (data.bellpepper.damaged || 0);
     }
     
-    if (sortType === 'all' || sortType === 'green') {
-      // Calculate actual size breakdown for green from filtered data
-      const greenSizes = filtered.reduce((acc, row) => {
-        const tomatoGreenSmall = Math.floor(row.tomato.green * 0.25);
-        const tomatoGreenMedium = Math.floor(row.tomato.green * 0.45);
-        const tomatoGreenLarge = row.tomato.green - tomatoGreenSmall - tomatoGreenMedium;
-        
-        const bellpepperGreenSmall = Math.floor(row.bellpepper.green * 0.3);
-        const bellpepperGreenMedium = Math.floor(row.bellpepper.green * 0.4);
-        const bellpepperGreenLarge = row.bellpepper.green - bellpepperGreenSmall - bellpepperGreenMedium;
-        
-        acc.tomato.small += tomatoGreenSmall;
-        acc.tomato.medium += tomatoGreenMedium;
-        acc.tomato.large += tomatoGreenLarge;
-        acc.bellpepper.small += bellpepperGreenSmall;
-        acc.bellpepper.medium += bellpepperGreenMedium;
-        acc.bellpepper.large += bellpepperGreenLarge;
-        
-        return acc;
-      }, {
-        tomato: { small: 0, medium: 0, large: 0 },
-        bellpepper: { small: 0, medium: 0, large: 0 }
-      });
+    return totalCount > 0;
+  }
 
-      rows += `
-        <tr class="expandable-row" data-category="green">
-          <td><span class="expand-icon">⊞</span>Not Damaged- Green</td>
-          <td>${total.tomato.green}</td>
-          <td>${total.bellpepper.green}</td>
-          <td>${total.tomato.green + total.bellpepper.green}</td>
-        </tr>
-        <tr class="sub-row" data-parent="green">
-          <td>Small</td>
-          <td>${greenSizes.tomato.small}</td>
-          <td>${greenSizes.bellpepper.small}</td>
-          <td>${greenSizes.tomato.small + greenSizes.bellpepper.small}</td>
-        </tr>
-        <tr class="sub-row" data-parent="green">
-          <td>Medium</td>
-          <td>${greenSizes.tomato.medium}</td>
-          <td>${greenSizes.bellpepper.medium}</td>
-          <td>${greenSizes.tomato.medium + greenSizes.bellpepper.medium}</td>
-        </tr>
-        <tr class="sub-row" data-parent="green">
-          <td>Large</td>
-          <td>${greenSizes.tomato.large}</td>
-          <td>${greenSizes.bellpepper.large}</td>
-          <td>${greenSizes.tomato.large + greenSizes.bellpepper.large}</td>
-        </tr>
-      `;
-      tomatoTotal += total.tomato.green;
-      bellpepperTotal += total.bellpepper.green;
-    }
-    
-    if (sortType === 'all' || sortType === 'damaged') {
-      rows += `
-        <tr>
-          <td>Damaged</td>
-          <td>${total.tomato.damaged}</td>
-          <td>${total.bellpepper.damaged}</td>
-          <td>${total.tomato.damaged + total.bellpepper.damaged}</td>
-        </tr>
-      `;
-      tomatoTotal += total.tomato.damaged;
-      bellpepperTotal += total.bellpepper.damaged;
-    }
-
-    rows += `
+  // Show loading state
+  function showLoadingState() {
+    const tbody = document.querySelector('.summary-table tbody');
+    tbody.innerHTML = `
       <tr>
-        <td style="font-weight:bold;">Total Pieces</td>
-        <td>${tomatoTotal}</td>
-        <td>${bellpepperTotal}</td>
-        <td>${tomatoTotal + bellpepperTotal}</td>
+        <td colspan="4" class="loading-state">
+          <div class="loading-spinner"></div>
+          <div style="font-size: 1rem; font-weight: 500;">Loading data...</div>
+          <div style="font-size: 0.85rem; margin-top: 4px;">Please wait while we fetch your sorting summary</div>
+        </td>
+      </tr>
+    `;
+  }
+
+  // Show empty state
+  function showEmptyState(startDate, endDate, sortType) {
+    const tbody = document.querySelector('.summary-table tbody');
+    const label = document.getElementById('summaryDateLabel');
+    
+    let filterText = '';
+    if (startDate && endDate) {
+      filterText = `between ${startDate} and ${endDate}`;
+    } else {
+      filterText = 'for the latest period';
+    }
+    
+    let categoryText = '';
+    switch(sortType) {
+      case 'red': categoryText = ' for Not Damaged - Red crops'; break;
+      case 'green': categoryText = ' for Not Damaged - Green crops'; break;
+      case 'damaged': categoryText = ' for Damaged crops'; break;
+      default: categoryText = '';
+    }
+    
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-inbox"></i>
+          </div>
+          <div class="empty-state-title">No Data Available</div>
+          <div class="empty-state-message">
+            No sorting data found ${filterText}${categoryText}.<br>
+            ${startDate && endDate ? 'Try selecting a different date range or category.' : 'Start sorting crops to see data here.'}
+          </div>
+        </td>
       </tr>
     `;
 
-    const tbody = document.querySelector('.summary-table tbody');
-    tbody.innerHTML = rows;
-
-    // Add click event listeners for expandable rows (only for red and green)
-    document.querySelectorAll('.expandable-row').forEach(row => {
-      row.addEventListener('click', function() {
-        const category = this.dataset.category;
-        const icon = this.querySelector('.expand-icon');
-        const subRows = document.querySelectorAll(`tr.sub-row[data-parent="${category}"]`);
-        
-        const isExpanded = icon.classList.contains('expanded');
-        
-        if (isExpanded) {
-          // Collapse
-          icon.classList.remove('expanded');
-          icon.textContent = '⊞';
-          subRows.forEach(subRow => {
-            subRow.style.display = 'none';
-          });
-        } else {
-          // Expand
-          icon.classList.add('expanded');
-          icon.textContent = '⊟';
-          subRows.forEach(subRow => {
-            subRow.style.display = 'table-row';
-          });
-        }
-      });
-    });
-
-    const label = document.getElementById('summaryDateLabel');
+    // Update label
     if (startDate && endDate) {
-      label.textContent = `Summary: ${startDate} to ${endDate}`;
+      label.textContent = `Summary: ${startDate} to ${endDate} (No Data)`;
     } else {
-      const latest = summaryData[summaryData.length - 1].date;
-      label.textContent = `Latest Summary: ${latest}`;
+      label.textContent = `Latest Summary (No Data)`;
     }
+
+    // Update total crops sorted in overview
+    document.querySelector('.overview-value').textContent = '0';
+  }
+
+  // Show error state
+  function showErrorState() {
+    const tbody = document.querySelector('.summary-table tbody');
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" class="error-state">
+          <div class="error-state-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 8px;">Failed to Load Data</div>
+          <div style="font-size: 0.9rem; margin-bottom: 12px;">
+            Unable to connect to the server or fetch sorting data.<br>
+            Please check your connection and try again.
+          </div>
+          <button class="retry-btn" onclick="retryLoadData()">
+            <i class="fas fa-redo" style="margin-right: 6px;"></i>
+            Retry
+          </button>
+        </td>
+      </tr>
+    `;
+    
+    // Update label
+    document.getElementById('summaryDateLabel').textContent = 'Summary (Error)';
+    
+    // Update total crops sorted in overview
+    document.querySelector('.overview-value').textContent = '-';
+  }
+
+  // Retry function
+  function retryLoadData() {
+    const start = document.getElementById('summaryStartDate').value;
+    const end = document.getElementById('summaryEndDate').value;
+    const sortType = document.getElementById('summarySort').value;
+    renderSummaryTable(start, end, sortType);
+  }
+
+  // Make retryLoadData available globally
+  window.retryLoadData = retryLoadData;
+
+  // Summary Table Logic - Fetch from backend
+  function renderSummaryTable(startDate, endDate, sortType = 'all') {
+    // Fetch data from backend instead of using dummy data
+    const requestData = {
+      start_date: startDate,
+      end_date: endDate,
+      sort_type: sortType
+    };
+
+    fetch('http://127.0.0.1:5000/sorting-summary', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestData)
+    })
+    .then(res => res.json())
+    .then(result => {
+      if (result.success && result.data) {
+        const data = result.data;
+        
+        let rows = '';
+        let tomatoTotal = 0;
+        let bellpepperTotal = 0;
+
+        if (sortType === 'all' || sortType === 'red') {
+          rows += `
+            <tr class="expandable-row" data-category="red">
+              <td><span class="expand-icon">⊞</span>Not Damaged- Red</td>
+              <td>${data.tomato.red || 0}</td>
+              <td>${data.bellpepper.red || 0}</td>
+              <td>${(data.tomato.red || 0) + (data.bellpepper.red || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="red">
+              <td>Small</td>
+              <td>${data.tomato.red_small || 0}</td>
+              <td>${data.bellpepper.red_small || 0}</td>
+              <td>${(data.tomato.red_small || 0) + (data.bellpepper.red_small || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="red">
+              <td>Medium</td>
+              <td>${data.tomato.red_medium || 0}</td>
+              <td>${data.bellpepper.red_medium || 0}</td>
+              <td>${(data.tomato.red_medium || 0) + (data.bellpepper.red_medium || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="red">
+              <td>Large</td>
+              <td>${data.tomato.red_large || 0}</td>
+              <td>${data.bellpepper.red_large || 0}</td>
+              <td>${(data.tomato.red_large || 0) + (data.bellpepper.red_large || 0)}</td>
+            </tr>
+          `;
+          tomatoTotal += data.tomato.red || 0;
+          bellpepperTotal += data.bellpepper.red || 0;
+        }
+        
+        if (sortType === 'all' || sortType === 'green') {
+          rows += `
+            <tr class="expandable-row" data-category="green">
+              <td><span class="expand-icon">⊞</span>Not Damaged- Green</td>
+              <td>${data.tomato.green || 0}</td>
+              <td>${data.bellpepper.green || 0}</td>
+              <td>${(data.tomato.green || 0) + (data.bellpepper.green || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="green">
+              <td>Small</td>
+              <td>${data.tomato.green_small || 0}</td>
+              <td>${data.bellpepper.green_small || 0}</td>
+              <td>${(data.tomato.green_small || 0) + (data.bellpepper.green_small || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="green">
+              <td>Medium</td>
+              <td>${data.tomato.green_medium || 0}</td>
+              <td>${data.bellpepper.green_medium || 0}</td>
+              <td>${(data.tomato.green_medium || 0) + (data.bellpepper.green_medium || 0)}</td>
+            </tr>
+            <tr class="sub-row" data-parent="green">
+              <td>Large</td>
+              <td>${data.tomato.green_large || 0}</td>
+              <td>${data.bellpepper.green_large || 0}</td>
+              <td>${(data.tomato.green_large || 0) + (data.bellpepper.green_large || 0)}</td>
+            </tr>
+          `;
+          tomatoTotal += data.tomato.green || 0;
+          bellpepperTotal += data.bellpepper.green || 0;
+        }
+        
+        if (sortType === 'all' || sortType === 'damaged') {
+          rows += `
+            <tr>
+              <td>Damaged</td>
+              <td>${data.tomato.damaged || 0}</td>
+              <td>${data.bellpepper.damaged || 0}</td>
+              <td>${(data.tomato.damaged || 0) + (data.bellpepper.damaged || 0)}</td>
+            </tr>
+          `;
+          tomatoTotal += data.tomato.damaged || 0;
+          bellpepperTotal += data.bellpepper.damaged || 0;
+        }
+
+        rows += `
+          <tr>
+            <td style="font-weight:bold;">Total Pieces</td>
+            <td>${tomatoTotal}</td>
+            <td>${bellpepperTotal}</td>
+            <td>${tomatoTotal + bellpepperTotal}</td>
+          </tr>
+        `;
+
+        const tbody = document.querySelector('.summary-table tbody');
+        tbody.innerHTML = rows;
+
+        // Add click event listeners for expandable rows
+        document.querySelectorAll('.expandable-row').forEach(row => {
+          row.addEventListener('click', function() {
+            const category = this.dataset.category;
+            const icon = this.querySelector('.expand-icon');
+            const subRows = document.querySelectorAll(`tr.sub-row[data-parent="${category}"]`);
+            
+            const isExpanded = icon.classList.contains('expanded');
+            
+            if (isExpanded) {
+              icon.classList.remove('expanded');
+              icon.textContent = '⊞';
+              subRows.forEach(subRow => {
+                subRow.style.display = 'none';
+              });
+            } else {
+              icon.classList.add('expanded');
+              icon.textContent = '⊟';
+              subRows.forEach(subRow => {
+                subRow.style.display = 'table-row';
+              });
+            }
+          });
+        });
+
+        // Update label
+        const label = document.getElementById('summaryDateLabel');
+        if (startDate && endDate) {
+          label.textContent = `Summary: ${startDate} to ${endDate}`;
+        } else {
+          label.textContent = `Latest Summary`;
+        }
+
+        // Update total crops sorted in overview
+        const totalCrops = tomatoTotal + bellpepperTotal;
+        document.querySelector('.overview-value').textContent = totalCrops;
+        
+      } else {
+        console.log('No summary data found');
+        // Show empty table
+        const tbody = document.querySelector('.summary-table tbody');
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align:center;padding:20px;color:#666;">No data available</td>
+          </tr>
+        `;
+      }
+    })
+    .catch(err => {
+      console.error('Could not fetch summary data:', err);
+      // Show error in table
+      const tbody = document.querySelector('.summary-table tbody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align:center;padding:20px;color:#e74c3c;">Failed to load data</td>
+        </tr>
+      `;
+    });
   }
 
   document.getElementById('summaryFilterBtn').addEventListener('click', function() {
     const start = document.getElementById('summaryStartDate').value;
     const end = document.getElementById('summaryEndDate').value;
     const sortType = document.getElementById('summarySort').value;
-    if (start && end && start <= end) {
-      renderSummaryTable(start, end, sortType);
-    } else {
-      renderSummaryTable(undefined, undefined, sortType);
-    }
+    renderSummaryTable(start, end, sortType);
   });
 
   document.getElementById('summarySort').addEventListener('change', function() {
     const start = document.getElementById('summaryStartDate').value;
     const end = document.getElementById('summaryEndDate').value;
     const sortType = this.value;
-    if (start && end && start <= end) {
-      renderSummaryTable(start, end, sortType);
-    } else {
-      renderSummaryTable(undefined, undefined, sortType);
-    }
+    renderSummaryTable(start, end, sortType);
   });
 
   // On page load, show latest summary
@@ -1434,7 +1667,7 @@
       }
     })
     .catch(error => {
-      // System is offline - this will trigger when backend is not running
+      // System is offline
       statusDot.className = 'status-dot status-offline';
       statusText.style.color = '#e74c3c';
       statusText.style.fontSize = '0.9rem';
@@ -1445,7 +1678,7 @@
 
   // Check system status immediately and then every 30 seconds
   checkSystemStatus();
-  setInterval(checkSystemStatus, 30000); // Check every 30 seconds
+  setInterval(checkSystemStatus, 30000);
 
   // Show Crop Qualities Overview modal on card click
   document.getElementById('cropQualitiesCard').addEventListener('click', function() {
@@ -1459,8 +1692,7 @@
     }
   });
 
-
-
 </script>
+
 </body>
 </html>

@@ -819,15 +819,14 @@
           document.getElementById('headerProfileName').textContent = fullName;
           document.getElementById('headerProfileRole').textContent = profile.role;
         } else {
-          alert('Profile data not found. Please check your backend and database.');
+          console.log('Profile data not found.');
         }
       })
       .catch(err => {
-        console.error(err);
-        alert('Could not fetch profile info. Backend may not be running.');
+        console.error('Could not fetch profile info:', err);
       });
     } else {
-      alert('User is not logged in. Mobile number not found in localStorage.');
+      console.log('User is not logged in.');
     }
   });
 
@@ -886,102 +885,163 @@
       }
     });
 
-    // Activity log data
-    const activityLogData = [
-      { crop: 'Tomato', color: 'Green', condition: 'Damaged', sorted: 'Middle Basket', size: "Small" , time: '2025-07-08 09:14:12 AM' },
-      { crop: 'Tomato', color: 'Red', condition: 'Not Damaged', sorted: 'Right Basket', size: "Large" , time: '2025-07-08 09:14:43 AM' },
-      { crop: 'Tomato', color: 'Red', condition: 'Damaged', sorted: 'Middle Basket', size: "Medium" , time: '2025-07-08 09:15:14 AM' },
-      { crop: 'Tomato', color: 'Red', condition: 'Not Damaged', sorted: 'Right Basket', size: "Medium" , time: '2025-07-08 09:15:40 AM' },
-      { crop: 'Tomato', color: 'Red', condition: 'Damaged', sorted: 'Middle Basket', size: "Large" , time: '2025-07-08 09:16:09 AM' },
-      { crop: 'Tomato', color: 'Green', condition: 'Not Damaged', sorted: 'Left Basket', size: "Small" ,time: '2025-07-08 09:16:38 AM' },
-      { crop: 'Tomato', color: 'Red', condition: 'Damaged', sorted: 'Middle Basket', size: "Small" , time: '2025-07-08 09:17:03 AM' },
-      { crop: 'Tomato', color: 'Green', condition: 'Damaged', sorted: 'Middle Basket', size: "Medium" , time: '2025-07-08 09:17:31 AM' },
-      { crop: 'Bell Pepper', color: 'Green', condition: 'Not Damaged', sorted: 'Left Basket', size: "Large" , time: '2025-07-08 09:18:02 AM' },
-      { crop: 'Bell Pepper', color: 'Red', condition: 'Damaged', sorted: 'Middle Basket', size: "Large" , time: '2025-07-08 09:18:25 AM' },
-      { crop: 'Bell Pepper', color: 'Red', condition: 'Not Damaged', sorted: 'Right Basket', size: "Small" , time: '2025-07-08 09:18:47 AM' },
-      { crop: 'Bell Pepper', color: 'Green', condition: 'Damaged', sorted: 'Middle Basket', size: "Medium" , time: '2025-07-08 09:19:10 AM' }
-    ];
+    // Activity log data - Fetch from backend
+    function fetchActivityLogData(filterSort = 'all', filterDate = '') {
+      // Show loading state
+      showLoadingState();
+      
+      const requestData = {
+        filter_type: filterSort,
+        filter_date: filterDate
+      };
 
-    
-function renderActivityLogTable(filterSort = 'all', filterDate = '') {
-  const tbody = document.getElementById('activityLogTbody');
-  if (!tbody) return;
-  tbody.innerHTML = '';
-  let hasData = false;
-  activityLogData.forEach(row => {
-    const rowDate = row.time.slice(0, 10);
-    let match = false;
-    switch (filterSort) {
-      case 'all':
-        match = true;
-        break;
-      case 'tomato':
-        match = row.crop.toLowerCase() === 'tomato';
-        break;
-      case 'bellpepper':
-        match = row.crop.toLowerCase().replace(' ', '') === 'bellpepper';
-        break;
-      case 'notdamagedred':
-        match = row.condition === 'Not Damaged' && row.color.toLowerCase() === 'red';
-        break;
-      case 'notdamagedgreen':
-        match = row.condition === 'Not Damaged' && row.color.toLowerCase() === 'green';
-        break;
-      case 'damaged':
-        match = row.condition === 'Damaged';
-        break;
-      case 'small':
-        match = (row.size || '').toLowerCase() === 'small';
-        break;
-      case 'medium':
-        match = (row.size || '').toLowerCase() === 'medium';
-        break;
-      case 'large':
-        match = (row.size || '').toLowerCase() === 'large';
-        break;
-      default:
-        match = true;
+      fetch('http://127.0.0.1:5000/activity-log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success && result.data && result.data.length > 0) {
+          renderActivityLogTable(result.data);
+        } else {
+          showEmptyState(filterSort, filterDate);
+        }
+      })
+      .catch(err => {
+        console.error('Could not fetch activity log data:', err);
+        showErrorState();
+      });
     }
-    const matchDate = (!filterDate || rowDate === filterDate);
-    if (match && matchDate) {
-      hasData = true;
-      const tr = document.createElement('tr');
-      tr.style.borderBottom = '2px solid #e0e0e0';
-      tr.innerHTML = `
-        <td>${row.crop}</td>
-        <td>${row.color}</td>
-        <td>${row.condition}</td>
-        <td>${row.sorted}</td>
-        <td>${row.size || ''}</td>
-        <td>${row.time}</td>
+
+    function renderActivityLogTable(data) {
+      const tbody = document.getElementById('activityLogTbody');
+      if (!tbody) return;
+      
+      tbody.innerHTML = '';
+      
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '2px solid #e0e0e0';
+        tr.innerHTML = `
+          <td>${row.crop_type || 'N/A'}</td>
+          <td>${row.color || 'N/A'}</td>
+          <td>${row.condition || 'N/A'}</td>
+          <td>${row.sorted_to || 'N/A'}</td>
+          <td>${row.size || 'N/A'}</td>
+          <td>${row.timestamp || 'N/A'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function showLoadingState() {
+      const tbody = document.getElementById('activityLogTbody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center;padding:40px 20px;color:#666;">
+            <div style="display:inline-block;width:30px;height:30px;border:3px solid #f3f3f3;border-top:3px solid #4b8c2a;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:12px;"></div>
+            <div style="font-size:1rem;font-weight:500;">Loading activity log...</div>
+            <div style="font-size:0.85rem;margin-top:4px;">Please wait while we fetch your data</div>
+          </td>
+        </tr>
       `;
-      tbody.appendChild(tr);
     }
-  });
-  if (!hasData) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td colspan="6" style="text-align:center;color:#888;padding:24px 0;">No activity log for this day.</td>`;
-    tbody.appendChild(tr);
-  }
-}
 
+    function showEmptyState(filterSort, filterDate) {
+      const tbody = document.getElementById('activityLogTbody');
+      
+      let filterText = '';
+      if (filterDate) {
+        filterText = ` for ${filterDate}`;
+      }
+      
+      let categoryText = '';
+      switch(filterSort) {
+        case 'tomato': categoryText = ' (Tomato only)'; break;
+        case 'bellpepper': categoryText = ' (Bell Pepper only)'; break;
+        case 'notdamagedred': categoryText = ' (Not Damaged - Red only)'; break;
+        case 'notdamagedgreen': categoryText = ' (Not Damaged - Green only)'; break;
+        case 'damaged': categoryText = ' (Damaged only)'; break;
+        case 'small': categoryText = ' (Small size only)'; break;
+        case 'medium': categoryText = ' (Medium size only)'; break;
+        case 'large': categoryText = ' (Large size only)'; break;
+        default: categoryText = '';
+      }
+      
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center;padding:40px 20px;color:#666;">
+            <div style="font-size:3rem;color:#ddd;margin-bottom:16px;">
+              <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div style="font-size:1.2rem;font-weight:600;color:#555;margin-bottom:8px;">No Activity Found</div>
+            <div style="font-size:0.9rem;color:#888;line-height:1.4;">
+              No sorting activity logged${filterText}${categoryText}.<br>
+              ${filterDate || filterSort !== 'all' ? 'Try adjusting your filters or selecting a different date.' : 'Start sorting crops to see activity here.'}
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function showErrorState() {
+      const tbody = document.getElementById('activityLogTbody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align:center;padding:40px 20px;color:#e74c3c;">
+            <div style="font-size:3rem;color:#e74c3c;margin-bottom:16px;">
+              <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div style="font-size:1.1rem;font-weight:600;margin-bottom:8px;">Failed to Load Data</div>
+            <div style="font-size:0.9rem;margin-bottom:12px;">
+              Unable to connect to the server or fetch activity data.<br>
+              Please check your connection and try again.
+            </div>
+            <button onclick="retryLoadActivityData()" style="background:#4b8c2a;color:#fff;border:none;border-radius:6px;padding:8px 16px;font-size:0.9rem;font-weight:500;cursor:pointer;transition:background 0.2s;">
+              <i class="fas fa-redo" style="margin-right:6px;"></i>
+              Retry
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function retryLoadActivityData() {
+      const filterSort = document.getElementById('activitySort').value;
+      const filterDate = document.getElementById('activityDateFilter').value;
+      fetchActivityLogData(filterSort, filterDate);
+    }
+
+    // Make retry function available globally
+    window.retryLoadActivityData = retryLoadActivityData;
 
     // Listen for crop sort changes
     document.getElementById('activitySort').addEventListener('change', function() {
-      const filterCrop = this.value;
+      const filterSort = this.value;
       const filterDate = document.getElementById('activityDateFilter').value;
-      renderActivityLogTable(filterCrop, filterDate);
+      fetchActivityLogData(filterSort, filterDate);
     });
 
     // Listen for date filter changes
     document.getElementById('activityDateFilter').addEventListener('change', function() {
       const filterDate = this.value;
-      const filterCrop = document.getElementById('activitySort').value;
-      renderActivityLogTable(filterCrop, filterDate);
+      const filterSort = document.getElementById('activitySort').value;
+      fetchActivityLogData(filterSort, filterDate);
     });
 
-    // Initial render
-    renderActivityLogTable();
-  </script>
+    // Initial render - load all activity data
+    fetchActivityLogData();
+
+    // Add CSS for spinner animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+</script>
 </body>
 </html>
