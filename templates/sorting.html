@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DuotectIQ - Sorting</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+  body {
+      margin: 0;
+      background: #fdfdfd;
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: #222;
+    }
+   .dashboard-header {
+  background:#3E8209;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 32px;
+  height: 64px;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;         
+  right: 0;
+  z-index: 100;    
+}
+    .dashboard-header .profile-box {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      color: #222;
+      border-radius: 22px;
+      padding: 6px 18px 6px 6px;
+      font-size: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      gap: 10px;
+      min-width: 170px;
+    }
+    .dashboard-header .profile-pic {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #4b8c2a;
+      background: #eee;
+    }
+    .dashboard-header .profile-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: 0.98rem;
+      line-height: 1.1;
+    }
+    .dashboard-header .profile-info .name {
+      font-weight: 600;
+      color: #222;
+    }
+    .dashboard-header .profile-info .role {
+      font-size: 0.92rem;
+      color: #4b8c2a;
+      font-weight: 500;
+    }
+    .dashboard-header .profile-arrow {
+      margin-left: 8px;
+      font-size: 1.2rem;
+      color: #888;
+    }
+
+    .dashboard-main {
+      display: flex;
+      min-height: calc(100vh - 64px);
+      margin-top: 64px;
+      margin-left: 240px; /* Same as sidebar width */
+      transition: margin-left 0.3s;
+    }
+
+    .dashboard-sidebar {
+  width: 240px;
+  background: #274D09;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 100vh;
+  height: 100vh;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;    /* Higher than header */
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 24px;
+}
+    .dashboard-sidebar.collapsed {
+      width: 80px;
+      min-width: 70px;
+      overflow: visible;
+      
+    }
+    .sidebar-top {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  .sidebar-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  padding: 2px 0 0 12px;   /* Increase/decrease 16px to move down/up */
+  height: 60px;             /* Adjust height for tighter or looser fit */
+  margin-bottom: 70px;      /* Space below logo row, decrease to move menu up */
+}
+    .sidebar-logo-row img {
+      height: 48px;
+      width:auto;
+      border-radius: 10px;
+      transition: margin 0.3s;
+      margin-left: -5px;;
+    }
+    .sidebar-logo-row span {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: opacity 0.3s, width 0.3s;
+      white-space: nowrap;
+      margin-top: 15px;
+    }
+    .dashboard-sidebar.collapsed .sidebar-logo-row span {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+    .sidebar-toggle-btn {
+  background: #274D09;
+  border: none;
+  color: #fff;
+  border-radius: 50%;      /* Make it a circle */
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 20px;
+  right: -20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 11;
+  transition: background 0.2s;
+}
+    .sidebar-toggle-btn:hover {
+      background: #3b7a2a;
+    }
+    .sidebar-toggle-btn i {
+      font-size: 1.3rem;
+      transition: transform 0.3s;
+    }
+    .dashboard-sidebar.collapsed .sidebar-toggle-btn i {
+      transform: rotate(180deg);
+    }
+
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 0 0 0 8px;
+    }
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap:20px;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.15rem;
+      font-weight: 500;
+      padding: 12px 18px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-align: left;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    .sidebar-menu .active, .sidebar-menu a:hover {
+      background: #fff;
+      color: #4b8c2a;
+    }
+    .sidebar-menu .icon {
+      font-size: 1.3rem;
+      width: 28px;
+      text-align: center;
+      min-width: 28px;
+    }
+    .dashboard-sidebar.collapsed .sidebar-menu a span:not(.icon) {
+      display: none;
+    }
+    .dashboard-sidebar.collapsed .sidebar-menu a {
+      justify-content: center;
+      padding: 12px 0;
+    }
+
+    .dashboard-content {
+      flex: 1;
+      padding: 36px 32px 0 32px;
+      background: #f4f4f4;
+      min-width: 0;
+      transition: margin-left 0.3s;
+    }
+    .dashboard-title {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      margin-top: 0;
+      letter-spacing: 0.5px;
+    }
+    .dashboard-overview {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .overview-card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+      padding: 24px 32px;
+      min-width: 220px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 1.15rem;
+      font-weight: 500;
+      position: relative;
+    }
+    .overview-card .icon {
+      font-size: 2.1rem;
+      color: #4b8c2a;
+      margin-right: 10px;
+    }
+    .overview-card .status-dot {
+      width: 10px;
+      height: 10px;
+      background: #2ecc40;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 7px;
+    }
+    .overview-card .overview-value {
+      color: #4b8c2a;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .overview-card .overview-label {
+      color: #222;
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-left: 2px;
+    }
+    .overview-card .overview-arrow {
+      color: #4b8c2a;
+      font-size: 1.3rem;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    .sorting-summary-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin: 32px 0 18px 0;
+      letter-spacing: 0.5px;
+      text-shadow: 2px 4px 8px #eaeaea, 0 2px 8px #eaeaea;
+    }
+    .sorting-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .summary-date {
+      font-size: 1rem;
+      color: #444;
+      background: #fff;
+      border: 1.5px solid #ccc;
+      border-radius: 8px;
+      padding: 6px 12px;
+      outline: none;
+      margin-left: 8px;
+    }
+    .summary-table-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+      padding: 18px 18px 8px 18px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.08rem;
+      background: #fff;
+    }
+    .summary-table th, .summary-table td {
+      padding: 10px 14px;
+      text-align: center;
+    }
+    .summary-table th {
+      background: #f4f4f4;
+      color: #333;
+      font-weight: 700;
+      font-size: 1.08rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .summary-table td {
+      color: #222;
+      font-weight: 500;
+    }
+    .summary-table tr:last-child td {
+      font-weight: 700;
+      color: #4b8c2a;
+      background: #f8fff4;
+      border-top: 2px solid #e0e0e0;
+    }
+    .summary-table td:last-child, .summary-table th:last-child {
+      font-weight: 700;
+    }
+    .summary-table-container::-webkit-scrollbar {
+      height: 8px;
+      background: #eee;
+    }
+    .summary-table-container::-webkit-scrollbar-thumb {
+      background: #c2e0b7;
+      border-radius: 8px;
+    }
+    @media (max-width: 900px) {
+      .dashboard-main {
+        flex-direction: column;
+      }
+      .dashboard-sidebar {
+        width: 100vw;
+        flex-direction: row;
+        min-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 60px;
+      }
+      .sidebar-menu {
+        flex-direction: row;
+        gap: 0;
+        width: 100vw;
+        justify-content: space-around;
+        padding: 0;
+      }
+      .dashboard-content {
+        padding: 18px 4vw 0 4vw;
+      }
+    }
+    @media (max-width: 600px) {
+      .dashboard-header {
+        flex-direction: column;
+        height: auto;
+        padding: 8px 8px;
+      }
+      .dashboard-content {
+        padding: 10px 2vw 0 2vw;
+      }
+      .overview-card {
+        padding: 14px 10px;
+        min-width: 120px;
+        font-size: 1rem;
+      }
+      .summary-table th, .summary-table td {
+        padding: 6px 4px;
+        font-size: 0.98rem;
+      }
+    }
+    .summary-table tbody tr:nth-child(even) {
+  background: #f8f8f8;
+}
+.summary-table tbody tr:nth-child(odd) {
+  background: #fff;
+}
+.summary-table tbody tr {
+  border-bottom: 2px solid #e0e0e0;
+}
+.summary-table tbody tr:last-child {
+  border-bottom: none;
+}
+    .calendar-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .calendar-icon {
+      margin-left: 6px;
+      font-size: 1.2rem;
+      color: #444;
+      cursor: pointer;
+      user-select: none;
+    }
+    .custom-calendar {
+      position: absolute;
+      top: 38px;
+      left: 0;
+      background: #f8f8f8;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+      padding: 16px 18px 12px 18px;
+      z-index: 100;
+      min-width: 240px;
+      max-width: 270px;
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: #222;
+      border: 2px solid #4b8c2a22;
+      animation: fadeIn 0.18s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .calendar-header button {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: #4b8c2a;
+      padding: 2px 8px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .calendar-header button:hover {
+      background: #e6f4e6;
+    }
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 1.08rem;
+      margin-top: 2px;
+    }
+    .calendar-table th {
+      color: #4b8c2a;
+      font-weight: 700;
+      padding: 4px 0;
+      font-size: 1rem;
+    }
+    .calendar-table td {
+      padding: 4px 0;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .calendar-table td:hover {
+      background: #e6f4e6;
+      color: #4b8c2a;
+    }
+    .calendar-table .selected {
+      background: #4b8c2a;
+      color: #fff;
+      font-weight: 700;
+    }
+    .calendar-table .today {
+      border: 1.5px solid #4b8c2a;
+      font-weight: 700;
+      background: #e6f4e6;
+    }
+    #sortingSection {
+      display: none;
+    }
+    .sorting-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .sorting-toolbar .sorting-controls label {
+      margin-right: 10px;
+      font-size: 1.1rem;
+    }
+    .sorting-toolbar .sorting-controls button {
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;      /* Increase vertical and horizontal padding */
+  font-size: 0.9rem;         /* Larger text */
+  border-radius: 10px;     /* More rounded corners */
+      font-weight: 600;
+      box-shadow: 0 2px 6px #b2d8b2;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    .sorting-toolbar .sorting-status {
+      margin-left: 12px;
+      font-size: 1.1rem;
+    }
+    .sorting-toolbar .sorting-status .status-dot {
+      color: red;
+      font-size: 1.2rem;
+      vertical-align: middle;
+      margin-right: 3px;
+    }
+    .sorting-main {
+      display: flex;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+    .sorting-feed,
+.sorting-result {
+  background: #fff; /* Make container white for visibility */
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(44, 62, 80, 0.18); /* Add a soft shadow */
+  padding: 24px 32px;
+  min-width: 340px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: -5px;
+}
+#liveCam {
+  width: 100%;
+  max-width: 480px; /* or any max width you want */
+  height: 270px;    /* or use aspect-ratio: 16/9; for modern browsers */
+  border-radius: 8px;
+  background: #222;
+  object-fit: cover;
+  display: block;
+  transform: scalex(-1);
+
+    }
+    .sorting-feed-title, .sorting-result-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .sorting-feed-cam {
+      background: #ddd;
+      border: 4px solid #ccc;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #555;
+    }
+    .sorting-result {
+      background: #e0e0e0;
+      box-shadow: 0 6px 18px #bdbdbd;
+    }
+    .sorting-result-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 25px;
+      text-shadow: 0 2px 8px #fff;
+    }
+    .sorting-result-table {
+      width: 100%;
+    }
+    .sorting-result-table td {
+      width: 50%;
+    }
+    .sorting-baskets {
+      background: #D9D9D9;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(44, 62, 80, 0.28), 0 2px 8px #bdbdbd;
+      border: 0.3px solid #bdbdbd;
+      padding: 18px 18px;
+      margin-top: 28px;
+      transition: box-shadow 0.2s;
+    }
+    .sorting-baskets-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .sorting-baskets-btns {
+      display: flex;
+      justify-content: center;
+      gap: 220px;
+    }
+    .sorting-baskets-btns button {
+      font-size: 1.8rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 18px;
+      padding:25px 30px;
+      box-shadow: 0 4px 12px #b2d8b2;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .sorting-baskets-btns .green { background: #4b8c2a; color: #fff; }
+    .sorting-baskets-btns .damaged { background: #e0b04b; color: #fff; box-shadow: 0 4px 12px #ffe0b2; }
+    .sorting-baskets-btns .red { background: #d11a1a; color: #fff; box-shadow: 0 4px 12px #ffb2b2; }
+
+     #sortingHistoryTable tbody tr:nth-child(even) {
+  background: #f8fff4;
+}
+#sortingHistoryTable tbody tr:nth-child(odd) {
+  background: #fff;
+}
+#sortingHistoryTable td {
+  border: none !important;
+  color: #2d3a22;
+  font-weight: 500;
+  padding: 6px 6px;
+  font-size: 0.90rem;
+}
+#sortingHistoryTable th {
+  border: none !important;
+  font-size: 0.90rem;
+  padding: 6px 6px;
+}
+.result-display {
+  display: inline-block;
+  width: 320px;
+  max-width: 320px;
+  min-width: 320px;
+  background: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 1rem;
+  color: #222;
+  box-sizing: border-box;
+  min-height: 35px;
+  vertical-align: middle;
+  pointer-events: none;
+  margin-bottom: 4px;   /* Add this line for vertical gap */
+}
+#cropMsg {
+  min-height: 18px;        /* Reserve space for the message */
+  display: block;
+  position: absolute;      /* Position it over or below the dropdown */
+  left: 0;
+  width: 100%;
+  z-index: 10;
+}
+.sorting-controls {
+  position: relative;      /* Make parent relative for absolute child */
+}
+.sorting-feed {
+  margin-top: 10px; /* Move the camera feed upward */
+}
+#cancelLogoutBtn:hover {
+  background: #e8e8e8 !important;
+  border-color: #bbb !important;
+}
+
+#confirmLogoutBtn:hover {
+  background: #b71c1c !important;
+}
+  </style>
+</head>
+<body>
+  <div class="dashboard-header">
+    <div class="profile-box" id="profileBox" style="position:relative;cursor:pointer;">
+      <span class="profile-pic" style="display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:#eee;border:2px solid #4b8c2a;">
+        <i class="fas fa-user" style="font-size:1.5rem;color:#4b8c2a;"></i>
+      </span>
+      <div class="profile-info">
+        <span class="name" id="headerProfileName"></span>
+        <span class="role" id="headerProfileRole"></span>
+      </div>
+      <span class="profile-arrow"><i class="fas fa-chevron-down"></i></span>
+      
+       <!-- Profile Popup -->
+    <div id="profilePopup" style="display:none; position:absolute; top:54px; right:0; z-index:999; background:#fff; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.15); padding:0; min-width:320px; max-width:95vw; border:1px solid #e8e8e8; overflow:hidden;">
+      
+      <!-- Header Section -->
+      <div style="background:linear-gradient(135deg, #4b8c2a 0%, #3a6d20 100%); padding:18px 20px; color:#fff;">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <span style="display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:#fff;border:3px solid rgba(255,255,255,0.3);">
+            <i class="fas fa-user" style="font-size:1.5rem;color:#4b8c2a;"></i>
+          </span>
+          <div>
+            <div style="font-weight:700;font-size:1.0rem;margin-bottom:3px;" id="popupProfileName"></div>
+            <div style="font-size:0.8rem;opacity:0.9;background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:10px;display:inline-block;" id="popupProfileRole"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Section -->
+      <div style="padding:20px;">
+        <div style="margin-bottom:16px;">
+          <h4 style="color:#2d3a22;font-size:0.95rem;font-weight:700;margin:0 0 12px 0;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-user-circle" style="color:#4b8c2a;font-size:0.85rem;"></i>
+            Personal Information
+          </h4>
+          
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:flex-start;padding:10px;background:#f8fff4;border-radius:6px;border-left:3px solid #4b8c2a;">
+              <div style="display:flex;align-items:center;gap:8px;width:100%;">
+                <i class="fas fa-id-card" style="color:#4b8c2a;font-size:0.75rem;width:16px;"></i>
+                <div style="flex:1;">
+                  <div style="font-size:0.7rem;color:#666;font-weight:500;margin-bottom:1px;">Full Name</div>
+                  <div style="font-weight:600;color:#333;font-size:0.8rem;" id="popupProfileFullName"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:flex-start;padding:10px;background:#f8fff4;border-radius:6px;border-left:3px solid #4b8c2a;">
+              <div style="display:flex;align-items:center;gap:8px;width:100%;">
+                <i class="fas fa-phone" style="color:#4b8c2a;font-size:0.75rem;width:16px;"></i>
+                <div style="flex:1;">
+                  <div style="font-size:0.7rem;color:#666;font-weight:500;margin-bottom:1px;">Mobile Number</div>
+                  <div style="font-weight:600;color:#333;font-size:0.8rem;" id="popupProfileMobile"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:flex-start;padding:10px;background:#f8fff4;border-radius:6px;border-left:3px solid #4b8c2a;">
+              <div style="display:flex;align-items:flex-start;gap:8px;width:100%;">
+                <i class="fas fa-map-marker-alt" style="color:#4b8c2a;font-size:0.75rem;width:16px;margin-top:1px;"></i>
+                <div style="flex:1;">
+                  <div style="font-size:0.7rem;color:#666;font-weight:500;margin-bottom:1px;">Address</div>
+                  <div style="font-weight:600;color:#333;font-size:0.8rem;line-height:1.3;" id="popupProfileAddress"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align:center;padding-top:12px;border-top:1px solid #f0f0f0;">
+          <div style="color:#888;font-size:0.65rem;">
+            <i class="fas fa-shield-alt" style="margin-right:4px;color:#4b8c2a;"></i>
+            Your information is secure and private
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="dashboard-main">
+    <div class="dashboard-sidebar" id="dashboardSidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-logo-row">
+          <img src="Pictures/Logo.png" alt="DuotectIQ Logo">
+          <span>DuotectIQ</span>
+        </div>
+        <button class="sidebar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+      <div class="sidebar-menu">
+        <a href="dashboard.html"><span class="icon"><i class="fas fa-home"></i></span><span>Dashboard</span></a>
+        <a href="sorting.html" class="active"><span class="icon"><i class="fas fa-seedling"></i></span><span>Sorting</span></a>
+        <a href="history.html"><span class="icon"><i class="fas fa-list"></i></span><span>Sorting History</span></a>
+        <a href="#" id="logoutMenu"><span class="icon"><i class="fas fa-sign-out-alt"></i></span><span>Logout</span></a>
+      </div>
+    </div>
+    <div class="dashboard-content">
+        <!-- Sorting Section ONLY -->
+      <div class="sorting-toolbar">
+        <div class="sorting-controls">
+          <label for="cropSelect" style="font-weight:600;margin-right:8px;">Crop:</label>
+          <select id="cropSelect" style="padding:6px 12px;border-radius:8px;border:1.5px solid #ccc;font-size:1rem;margin-right:12px;">
+            <option value="" disabled selected>Please select</option>
+            <option value="tomato">Tomato</option>
+            <option value="bellpepper">Bell Pepper</option>
+          </select>
+          <div id="cropMsg" style="color:#d32f2f;font-size:0.95rem;margin-top:4px;display:none;">Please select a crop type.</div>
+          <button id="startSortingBtn">Start Sorting</button>
+          <span class="sorting-status"><span class="status-dot">●</span> Stopped Running</span>
+        </div>
+      </div>
+      <div class="sorting-main">
+        <div class="sorting-feed">
+          <div class="sorting-feed-title">Live Camera Feed</div>
+          <img id="piCam" src="/video_feed" width="100%" height="280" style="background:#222;border-radius:8px;object-fit:cover;display:block;" alt="Pi Camera Feed">
+        </div>
+        <div class="sorting-result">
+          <div class="sorting-result-title">Classification Result</div>
+                    <table class="sorting-result-table">
+            <tr>
+              <td style="font-weight:600;">Crop Type:</td>
+              <td><span id="class-crop" class="result-display"></span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">Condition:</td>
+              <td><span id="class-condition" class="result-display"></span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">Color:</td>
+              <td><span id="class-color" class="result-display"></span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">Sorted to:</td>
+              <td><span id="class-sorted" class="result-display"></span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">Size:</td>
+              <td><span id="class-size" class="result-display"></span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;">Time Detected:</td>
+              <td><span id="class-time" class="result-display"></span></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="sorting-baskets">
+        <div class="sorting-baskets-title">Sorting Baskets View</div>
+        <div class="sorting-baskets-btns">
+          <button class="green">Green</button>
+          <button class="damaged">Damaged</button>
+          <button class="red">Red</button>
+        </div>
+      </div>
+  <div id="logoutModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:28px 24px 20px 24px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.15);max-width:350px;width:85%;text-align:center;border:1px solid #e0e0e0;">
+      <div style="color:#d32f2f;font-size:2.2rem;margin-bottom:12px;">
+        <i class="fas fa-sign-out-alt"></i>
+      </div>
+      <div style="font-size:1.2rem;font-weight:600;margin-bottom:6px;color:#333;">Confirm Logout</div>
+      <div style="font-size:0.9rem;color:#666;margin-bottom:20px;line-height:1.3;">Are you sure you want to log out?</div>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button id="cancelLogoutBtn" style="background:#f5f5f5;color:#333;font-size:0.9rem;font-weight:500;padding:10px 20px;border:1px solid #ddd;border-radius:6px;cursor:pointer;transition:all 0.2s;">Cancel</button>
+        <button id="confirmLogoutBtn" style="background:#d32f2f;color:#fff;font-size:0.9rem;font-weight:500;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;">Yes, Log Out</button>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+ <div id="logoutModal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;background:rgba(0,0,0,0.4);align-items:center;justify-content:center;">
+  <div style="background:#fff;padding:28px 24px 20px 24px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.15);max-width:350px;width:85%;text-align:center;border:1px solid #e0e0e0;">
+    <div style="color:#d32f2f;font-size:2.2rem;margin-bottom:12px;">
+      <i class="fas fa-sign-out-alt"></i>
+    </div>
+    <div style="font-size:1.2rem;font-weight:600;margin-bottom:6px;color:#333;">Confirm Logout</div>
+    <div style="font-size:0.9rem;color:#666;margin-bottom:20px;line-height:1.3;">Are you sure you want to log out?</div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button id="cancelLogoutBtn" style="background:#f5f5f5;color:#333;font-size:0.9rem;font-weight:500;padding:10px 20px;border:1px solid #ddd;border-radius:6px;cursor:pointer;transition:all 0.2s;">Cancel</button>
+      <button id="confirmLogoutBtn" style="background:#d32f2f;color:#fff;font-size:0.9rem;font-weight:500;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;transition:all 0.2s;">Yes, Log Out</button>
+    </div>
+  </div>
+</div>
+<script>
+/* =======================
+   Sorting controls (toggle)
+   ======================= */
+const startBtn      = document.getElementById('startSortingBtn');
+const sortingStatus = document.querySelector('.sorting-status');
+const cropSelect    = document.getElementById('cropSelect');
+const cropMsg       = document.getElementById('cropMsg');
+
+let isRunning    = false;
+let pollTimer    = null;
+let triggerTimer = null;
+let lastDbKey    = '';
+let runStartIso  = '';  // gate results to only those detected AFTER Start is pressed
+
+// --- waiting note (kept) ---
+let waitMsgEl = document.getElementById('waitMsg') ||
+                document.getElementById('emptyNotice') ||
+                document.getElementById('waitingMsg');
+if (!waitMsgEl) {
+  waitMsgEl = document.createElement('div');
+  waitMsgEl.id = 'waitMsg';
+  waitMsgEl.style.marginTop = '10px';
+  waitMsgEl.style.color = '#555';
+  waitMsgEl.style.fontWeight = '600';
+  document.querySelector('.sorting-result').appendChild(waitMsgEl);
+}
+function showWaitingNote(show, text){
+// Removed waiting message logic as requested
+}
+
+// --- results helpers ---
+function setFields(r){
+  const crop  = (r?.crop_type     || '').trim();
+  const cond  = (r?.condition     || '').trim();
+  const color = (r?.color         || '').trim();
+  const bin   = (r?.sorted_to     || '').trim();
+  const size  = (r?.size          || '').trim();
+  const time  = (r?.time_detected || '').trim();
+
+  document.getElementById('class-crop').textContent      = crop;
+  document.getElementById('class-condition').textContent = cond;
+  document.getElementById('class-color').textContent     = color;
+  document.getElementById('class-sorted').textContent    = bin;
+  document.getElementById('class-size').textContent      = size;
+  document.getElementById('class-time').textContent      = time;
+
+  // ⬇️ If any meaningful field is present, hide the waiting message.
+  const hasData = crop || cond || color || bin || size || time;
+  if (hasData) showWaitingNote(false);
+}
+function clearFields(){
+  setFields({});           // setFields will also evaluate hasData=false and keep waiting visible
+}
+
+// --- button visuals / status ---
+function setBtnStart(){
+  startBtn.textContent = 'Start Sorting';
+  startBtn.style.background = '#4CAF50';
+  startBtn.style.color = '#fff';
+  startBtn.disabled = false;
+}
+function setBtnStop(){
+  startBtn.textContent = 'Stop Sorting';
+  startBtn.style.background = '#d32f2f';
+  startBtn.style.color = '#fff';
+  startBtn.disabled = false;
+}
+function setStatusRunning(){
+  sortingStatus.innerHTML = `<span class="status-dot" style="color:#2e7d32">●</span> Running`;
+}
+function setStatusStopped(){
+  sortingStatus.innerHTML = `<span class="status-dot" style="color:#b71c1c">●</span> Stopped Running`;
+}
+
+// --- server helpers ---
+function triggerDetection(selectedCrop){
+  fetch('/start_sorting', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ crop_type: selectedCrop })
+  }).catch(()=>{});
+}
+
+function pollDetectionStatus(){
+  fetch('/get_latest_detection')
+    .then(r => r.json())
+    .then(j => {
+      console.log('Detection response:', j); // Debug log
+      if (!isRunning){
+        setBtnStart();
+        setStatusStopped();
+        return;
+      }
+      setBtnStop();
+      setStatusRunning();
+
+      // Hold last valid result for 3 seconds before clearing
+      if (!window.lastValidResultTimer) window.lastValidResultTimer = null;
+      if (j && j.success && j.result && j.result.present) {
+        const res = j.result;
+        // Always display new detection if seq changes
+        if (!window.lastSeq) window.lastSeq = 0;
+        if (res.crop_type && res.crop_type.toLowerCase() !== 'unknown' && res.color && res.seq > window.lastSeq) {
+          setFields(res);
+          window.lastSeq = res.seq;
+          // Reset timer on valid result
+          if (window.lastValidResultTimer) {
+            clearTimeout(window.lastValidResultTimer);
+            window.lastValidResultTimer = null;
+          }
+        } else {
+          // Start timer to clear fields after 3s if not already running
+          if (!window.lastValidResultTimer) {
+            window.lastValidResultTimer = setTimeout(() => {
+              clearFields();
+              window.lastValidResultTimer = null;
+            }, 3000);
+          }
+        }
+      } else {
+        // Start timer to clear fields after 3s if not already running
+        if (!window.lastValidResultTimer) {
+          window.lastValidResultTimer = setTimeout(() => {
+            clearFields();
+            window.lastValidResultTimer = null;
+          }, 3000);
+        }
+      }
+    })
+    .catch(()=>{ clearFields(); });
+}
+
+// Gate DB rows to AFTER runStartIso to avoid showing old entries
+function pollLatestFromDB(){
+  fetch('/get_latest_sorting')
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(row => {
+      if (!row || !row.time_detected) return;
+
+      // time_detected is '%Y-%m-%d %H:%M:%S', lexicographic compare works
+      if (runStartIso && row.time_detected < runStartIso) return; // ignore old records
+
+      const key = row.time_detected;
+      if (key !== lastDbKey){
+        setFields(row);           // setFields hides waiting if a real row exists
+        lastDbKey = key;
+      }
+    })
+    .catch(()=>{});
+}
+
+// --- button toggle ---
+startBtn.addEventListener('click', () => {
+  const selectedCrop = cropSelect.value;
+
+  if (!isRunning){
+    // START
+    if (!selectedCrop){
+      cropMsg.style.display = 'block';
+      return;
+    }
+    cropMsg.style.display = 'none';
+
+    isRunning   = true;
+    lastDbKey   = '';
+    runStartIso = new Date().toISOString().slice(0,19).replace('T',' ');
+
+    clearFields();
+    setBtnStop();
+    setStatusRunning();
+    showWaitingNote(true, 'Waiting for crop to enter camera view…');
+
+    triggerDetection(selectedCrop);
+    pollDetectionStatus();
+    pollLatestFromDB();
+
+    triggerTimer = setInterval(() => triggerDetection(selectedCrop), 3000);
+    pollTimer    = setInterval(() => {
+      pollDetectionStatus();
+      pollLatestFromDB();
+    }, 1200);
+
+  } else {
+    // STOP
+    isRunning = false;
+
+    if (triggerTimer){ clearInterval(triggerTimer); triggerTimer = null; }
+    if (pollTimer)   { clearInterval(pollTimer);    pollTimer    = null; }
+
+    setBtnStart();
+    setStatusStopped();
+    // keep last result visible, but no waiting line when stopped
+    showWaitingNote(false);
+
+    fetch('/stop_sorting', { method: 'POST' }).catch(()=>{});
+  }
+});
+
+/* =======================
+   Profile / Sidebar / Logout (unchanged)
+   ======================= */
+document.addEventListener('DOMContentLoaded', function () {
+  const userMobile = localStorage.getItem('mobile_number');
+  if (userMobile) {
+    fetch('/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mobile_number: userMobile })
+    })
+    .then(res => res.json())
+    .then(result => {
+      if (result.success && result.profile) {
+        const p  = result.profile;
+        const full = [p.first_name, p.middle_name, p.last_name].filter(Boolean).join(' ');
+        const addr = [p.street, p.baranggay, p.city, p.zip_code].filter(Boolean).join(', ');
+        document.getElementById('popupProfileName').textContent  = full;
+        document.getElementById('popupProfileRole').textContent  = p.role;
+        document.getElementById('popupProfileFullName').textContent = full;
+        document.getElementById('popupProfileMobile').textContent   = p.mobile_number;
+        document.getElementById('popupProfileAddress').textContent  = addr;
+        document.getElementById('headerProfileName').textContent = full;
+        document.getElementById('headerProfileRole').textContent = p.role;
+      } else {
+        alert('Profile data not found. Please check your backend and database.');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Could not fetch profile info. Backend may not be running.');
+    });
+  } else {
+    alert('User is not logged in. Mobile number not found in localStorage.');
+  }
+});
+
+const profileBox   = document.querySelector('.profile-box');
+const profilePopup = document.getElementById('profilePopup');
+profileBox.addEventListener('click', function(e){
+  e.stopPropagation();
+  profilePopup.style.display = (profilePopup.style.display === 'block') ? 'none' : 'block';
+});
+document.addEventListener('mousedown', function(e){
+  if (profilePopup.style.display === 'block' && !profilePopup.contains(e.target) && !profileBox.contains(e.target)) {
+    profilePopup.style.display = 'none';
+  }
+});
+
+const sidebar   = document.getElementById('dashboardSidebar');
+const main      = document.querySelector('.dashboard-main');
+const toggleBtn = document.getElementById('sidebarToggle');
+toggleBtn.addEventListener('click', function(){
+  sidebar.classList.toggle('collapsed');
+  main.style.marginLeft = sidebar.classList.contains('collapsed') ? '70px' : '240px';
+});
+
+const logoutMenu       = document.getElementById('logoutMenu');
+const logoutModal      = document.getElementById('logoutModal');
+const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+const cancelLogoutBtn  = document.getElementById('cancelLogoutBtn');
+
+logoutMenu.addEventListener('click', function(e){
+  e.preventDefault();
+  logoutModal.style.display = 'flex';
+});
+confirmLogoutBtn.addEventListener('click', function(){
+  window.location.href = 'HomePage.html';
+});
+cancelLogoutBtn.addEventListener('click', function(){
+  logoutModal.style.display = 'none';
+});
+logoutModal.addEventListener('mousedown', function(e){
+  if (e.target === logoutModal) {
+    logoutModal.style.display = 'none';
+  }
+});
+
+// Keep crop name synced in the panel (optional)
+document.getElementById('cropSelect').addEventListener('change', function(){
+  const selectedCrop = this.options[this.selectedIndex].text;
+  document.getElementById('class-crop').textContent =
+    selectedCrop === 'Please select' ? '' : selectedCrop;
+});
+
+let polling = false;
+let pollInterval = null;
+let lastSeq = 0;
+
+function startPolling() {
+  if (polling) return;
+  polling = true;
+  pollInterval = setInterval(async () => {
+    try {
+      const resp = await fetch('/get_latest_detection');
+      const data = await resp.json();
+      console.log('Detection response:', data);
+      if (data.success && data.result) {
+        // Only update if present and new seq
+        if (data.result.seq > lastSeq) {
+          lastSeq = data.result.seq;
+          updateResult(data.result);
+        } else {
+          // Suppress stale/cached result
+          // Optionally clear result if you want
+          // clearResult();
+        }
+      } else {
+        // Optionally clear result if no crop detected
+        // clearResult();
+      }
+    } catch (e) {
+      console.error('Polling error:', e);
+    }
+  }, 1000);
+}
+
+function stopPolling() {
+  polling = false;
+  if (pollInterval) clearInterval(pollInterval);
+  pollInterval = null;
+}
+
+function updateResult(result) {
+  document.getElementById('cropType').value = result.crop_type || '';
+  document.getElementById('condition').value = result.condition || '';
+  document.getElementById('color').value = result.color || '';
+  document.getElementById('sortedTo').value = result.sorted_to || '';
+  document.getElementById('size').value = result.size || '';
+  document.getElementById('timeDetected').value = result.time_detected || '';
+}
+
+function clearResult() {
+  document.getElementById('cropType').value = '';
+  document.getElementById('condition').value = '';
+  document.getElementById('color').value = '';
+  document.getElementById('sortedTo').value = '';
+  document.getElementById('size').value = '';
+  document.getElementById('timeDetected').value = '';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  startPolling();
+});
+</script>
+
+
+</body>
+</html>

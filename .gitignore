@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# VS Code
+.vscode/
+
+# OS junk
+.DS_Store
+
+# Optional (if you don’t want DB in repo)
+*.sqlite3
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# VS Code
+.vscode/
+
+# OS junk
+.DS_Store
+
+# Optional (if you don’t want DB in repo)
+*.sqlite3
