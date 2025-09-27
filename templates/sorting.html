@@ -775,13 +775,6 @@
         <!-- Sorting Section ONLY -->
       <div class="sorting-toolbar">
         <div class="sorting-controls">
-          <label for="cropSelect" style="font-weight:600;margin-right:8px;">Crop:</label>
-          <select id="cropSelect" style="padding:6px 12px;border-radius:8px;border:1.5px solid #ccc;font-size:1rem;margin-right:12px;">
-            <option value="" disabled selected>Please select</option>
-            <option value="tomato">Tomato</option>
-            <option value="bellpepper">Bell Pepper</option>
-          </select>
-          <div id="cropMsg" style="color:#d32f2f;font-size:0.95rem;margin-top:4px;display:none;">Please select a crop type.</div>
           <button id="startSortingBtn">Start Sorting</button>
           <span class="sorting-status"><span class="status-dot">●</span> Stopped Running</span>
         </div>
@@ -863,8 +856,6 @@
    ======================= */
 const startBtn      = document.getElementById('startSortingBtn');
 const sortingStatus = document.querySelector('.sorting-status');
-const cropSelect    = document.getElementById('cropSelect');
-const cropMsg       = document.getElementById('cropMsg');
 
 let isRunning    = false;
 let pollTimer    = null;
@@ -909,7 +900,14 @@ function setFields(r){
   if (hasData) showWaitingNote(false);
 }
 function clearFields(){
-  setFields({});           // setFields will also evaluate hasData=false and keep waiting visible
+  setFields({
+    crop_type: '',
+    condition: '',
+    color: '',
+    sorted_to: '',
+    size: '',
+    time_detected: ''
+  });
 }
 
 // --- button visuals / status ---
@@ -933,11 +931,11 @@ function setStatusStopped(){
 }
 
 // --- server helpers ---
-function triggerDetection(selectedCrop){
+function triggerDetection(){
   fetch('/start_sorting', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ crop_type: selectedCrop })
+    body: JSON.stringify({})
   }).catch(()=>{});
 }
 
@@ -1011,16 +1009,8 @@ function pollLatestFromDB(){
 
 // --- button toggle ---
 startBtn.addEventListener('click', () => {
-  const selectedCrop = cropSelect.value;
-
   if (!isRunning){
     // START
-    if (!selectedCrop){
-      cropMsg.style.display = 'block';
-      return;
-    }
-    cropMsg.style.display = 'none';
-
     isRunning   = true;
     lastDbKey   = '';
     runStartIso = new Date().toISOString().slice(0,19).replace('T',' ');
@@ -1030,11 +1020,11 @@ startBtn.addEventListener('click', () => {
     setStatusRunning();
     showWaitingNote(true, 'Waiting for crop to enter camera view…');
 
-    triggerDetection(selectedCrop);
+    triggerDetection();
     pollDetectionStatus();
     pollLatestFromDB();
 
-    triggerTimer = setInterval(() => triggerDetection(selectedCrop), 3000);
+    triggerTimer = setInterval(() => triggerDetection(), 3000);
     pollTimer    = setInterval(() => {
       pollDetectionStatus();
       pollLatestFromDB();
@@ -1134,13 +1124,6 @@ logoutModal.addEventListener('mousedown', function(e){
   }
 });
 
-// Keep crop name synced in the panel (optional)
-document.getElementById('cropSelect').addEventListener('change', function(){
-  const selectedCrop = this.options[this.selectedIndex].text;
-  document.getElementById('class-crop').textContent =
-    selectedCrop === 'Please select' ? '' : selectedCrop;
-});
-
 let polling = false;
 let pollInterval = null;
 let lastSeq = 0;
@@ -1158,6 +1141,7 @@ function startPolling() {
         if (data.result.seq > lastSeq) {
           lastSeq = data.result.seq;
           updateResult(data.result);
+          setFields(data.result);
         } else {
           // Suppress stale/cached result
           // Optionally clear result if you want

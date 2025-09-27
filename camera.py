@@ -4,16 +4,17 @@ from datetime import datetime
 from threading import Thread, Lock
 
 # =========================
-# TUNABLE THRESHOLDS (softer, easier to detect)
+# TUNABLE THRESHOLDS
+# (kept reasonable; detection must be real, but not too strict)
 # =========================
-MIN_PRESENT_STREAK      = 1     # consecutive passes required (debounce)
-CLASS_STABILITY         = 1     # same class this many times in a row
-ARMED_FIRST_MIN_CONF    = 0.40  # min confidence for first detection after arming
-MOTION_SCORE_THRESHOLD  = 1.0   # motion score to consider "object moved in"
-SCENE_LAP_VAR_MIN       = 10.0  # edge richness gate
-SCENE_STD_MIN           = 5.0   # contrast gate
-BASELINE_LAP_DELTA_MIN  = 5.0   # change vs baseline (edges)
-BASELINE_STD_DELTA_MIN  = 2.0   # change vs baseline (contrast)
+MIN_PRESENT_STREAK      = 1      # frames in a row after stability
+CLASS_STABILITY         = 1      # identical class windows required
+ARMED_FIRST_MIN_CONF    = 0.60   # min conf for first detection after arming
+MOTION_SCORE_THRESHOLD  = 2.0    # motion gate
+SCENE_LAP_VAR_MIN       = 15.0   # edge richness gate
+SCENE_STD_MIN           = 8.0    # contrast gate
+BASELINE_LAP_DELTA_MIN  = 6.0    # delta vs baseline
+BASELINE_STD_DELTA_MIN  = 3.0    # delta vs baseline
 
 # -------------------------
 # GLOBALS
@@ -52,7 +53,7 @@ _current_crop = "tomato"
 # -------------------------
 # Model Inference
 # -------------------------
-from model_inference import predict  # must return keys: present, confidence, crop_type, etc.
+from model_inference import predict  # must return keys: present, confidence, crop_type, condition, color, time_detected
 
 # -------------------------
 # Camera backend selection
@@ -138,28 +139,39 @@ def detect_crop() -> dict | None:
 
     crop_type_raw = (res.get('crop_type') or '').lower()
     color_raw = (res.get('color') or '').lower()
+    condition_raw = (res.get('condition') or '').lower()
 
-    # Normalize crop type (trust model; fallback to dropdown)
-    if 'pepper' in crop_type_raw or 'bellpep' in crop_type_raw or 'bell pepper' in crop_type_raw:
+    # Normalize crop type
+    if 'pepper' in crop_type_raw:
         crop_type = 'Bell Pepper'
     elif 'tomato' in crop_type_raw:
         crop_type = 'Tomato'
     else:
         crop_type = _current_crop.capitalize() if _current_crop else 'Unknown'
 
-    # Normalize color with safe defaults by crop
+    # Normalize color
     if 'red' in color_raw:
         color = 'Red'
     elif 'green' in color_raw:
         color = 'Green'
     else:
-        color = 'Red' if crop_type == 'Bell Pepper' else ('Green' if crop_type == 'Tomato' else '')
+        color = ''
+
+    # Decide bin (only Left / Right / Middle)
+    if 'damaged' in condition_raw:
+        sorted_to = 'Middle Bin'
+    elif 'not' in condition_raw and color == 'Red':
+        sorted_to = 'Right Bin'
+    elif 'not' in condition_raw and color == 'Green':
+        sorted_to = 'Left Bin'
+    else:
+        sorted_to = ''
 
     return {
         'crop_type':     crop_type,
         'condition':     res.get('condition', ''),
         'color':         color,
-        'sorted_to':     res.get('sorted_to', ''),
+        'sorted_to':     sorted_to,
         'size':          res.get('size', ''),
         'time_detected': res.get('time_detected', datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
         'confidence':    float(res.get('confidence', 0.0)),
@@ -310,7 +322,7 @@ def _accept_or_reset(pred: dict, frame) -> dict:
         "crop_type":     pred.get("crop_type", _current_crop),
         "condition":     pred.get("condition", ""),
         "color":         pred.get("color", ""),
-        "sorted_to":     pred.get("sorted_to", ""),
+        "sorted_to":     "",  # camera decides bin later (detect_crop)
         "size":          pred.get("size", ""),
         "time_detected": pred.get("time_detected") or datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "confidence":    conf,

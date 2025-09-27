@@ -12,5 +12,6 @@
   ],
   "color_space": "RGB",
   "layout": "NCHW",
-  "scale": "divide_by_255"
+  "scale": "divide_by_255",
+  "confidence_gate": 0.7
 }

@@ -1,5 +1,8 @@
 [
-  "Damaged",
-  "Not_Damaged_Green",
-  "Not_Damaged_Red"
+  "BellPepper_Damaged",
+  "BellPepper_NotDamaged_Green",
+  "BellPepper_NotDamaged_Red",
+  "Tomato_Damaged",
+  "Tomato_NotDamaged_Green",
+  "Tomato_NotDamaged_Red"
 ]

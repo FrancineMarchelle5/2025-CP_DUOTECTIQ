@@ -1183,7 +1183,7 @@
       sort_type: sortType
     };
 
-    fetch('/sorting-summary', {
+    fetch('/get_summary_data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestData)
@@ -1193,8 +1193,8 @@
       if (result.success && result.data) {
         const data = result.data;
         
-        // Check if all data is zero/empty
-        const hasData = checkIfDataExists(data, sortType);
+        // Check if there's any data (simplified check for new format)
+        const hasData = data.total_crops > 0;
         
         if (!hasData) {
           showEmptyState(startDate, endDate, sortType);
@@ -1202,8 +1202,6 @@
         }
         
         let rows = '';
-        let tomatoTotal = 0;
-        let bellpepperTotal = 0;
 
         if (sortType === 'all' || sortType === 'red') {
           rows += `

@@ -57,7 +57,7 @@ def _softmax(logits):
 def predict(img_bgr):
     """
     Return a dict the camera loop understands:
-      crop_type, condition, color, sorted_to, size,
+      crop_type, condition, color, size,
       time_detected, confidence, present
     """
     try:
@@ -72,59 +72,32 @@ def predict(img_bgr):
         conf   = float(probs[0, pred_i])
         pred_class = CLASS_NAMES[pred_i].lower()
 
-        # parse class -> fields
-
-        # ex: "tomato_not_damaged_red" / "bellpepper_damaged_green"
-        parts = pred_class.split("_")
-        base  = parts[0] if parts else ""
-
-        # Crop type
-        if "pepper" in base or "bellpep" in base:
-            crop = "Bell Pepper"
-        elif "tomato" in base:
+        # Parse crop, color, condition
+        crop, color, condition = "", "", ""
+        if "tomato" in pred_class:
             crop = "Tomato"
-        else:
-            crop = ""
+        elif "pepper" in pred_class or "bellpep" in pred_class:
+            crop = "Bell Pepper"
 
-        # Condition
-        if "damaged" in pred_class:
-            condition = "Damaged"
-        elif "not" in pred_class and "damaged" in pred_class:
-            condition = "Not Damaged"
-        else:
-            condition = "Unknown"
-
-        # Color
         if "red" in pred_class:
             color = "Red"
         elif "green" in pred_class:
             color = "Green"
-        else:
-            color = "Unknown"
 
-        # Sorting bin logic
-        if condition == "Damaged":
-            sorted_to = "Center Bin"
-        elif color == "Green":
-            sorted_to = "Left Bin" if crop == "Tomato" else "Right Bin"
-        elif color == "Red":
-            sorted_to = "Right Bin" if crop == "Tomato" else "Left Bin"
-        else:
-            sorted_to = "Unknown"
+        if "not" in pred_class and "damaged" in pred_class:
+            condition = "Not Damaged"
+        elif "damaged" in pred_class:
+            condition = "Damaged"
 
-        # Size logic (example: you can use more advanced logic here)
-        if crop == "Tomato":
-            size = "Large" if color == "Red" else "Medium"
-        elif crop == "Bell Pepper":
-            size = "Small" if color == "Green" else "Medium"
-        else:
-            size = "Unknown"
+        # Presence threshold: keep this modest, camera gates still apply
+        present = conf >= 0.40
 
-        # confidence threshold for presence
-        present = conf >= 0.20  # further lowered threshold for easier detection
+        # (Optional) size heuristic
+        size = ""
+        # keep size blank unless your model provides a better hint
 
-        # Debug logging for detection output
-        print(f"[DEBUG] Detection result: crop={crop}, color={color}, condition={condition}, conf={conf}, present={present}")
+        # Debug
+        print(f"[DEBUG] raw='{CLASS_NAMES[pred_i]}', crop={crop}, cond={condition}, color={color}, conf={conf:.3f}, present={present}")
 
         return {
             "present": present,
@@ -132,18 +105,17 @@ def predict(img_bgr):
             "crop_type": crop,
             "condition": condition,
             "color": color,
-            "sorted_to": sorted_to,
-            "size": "Medium",
+            "size": size,
             "time_detected": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
     except Exception as e:
+        print(f"[ERROR] inference: {e}")
         return {
             "present": False,
             "confidence": 0.0,
             "crop_type": "",
             "condition": "",
             "color": "",
-            "sorted_to": "",
             "size": "",
             "time_detected": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
